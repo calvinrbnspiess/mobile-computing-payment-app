@@ -35,6 +35,7 @@ class QrCode extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.all(14),
+        margin: const EdgeInsets.only(top: 18),
         decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: const Color(0xFFD6D6D6), width: 1),
@@ -60,13 +61,17 @@ class TransactionEntry extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(date, style: const TextStyle(color: Color(0xff5F6060))),
+        Text(date,
+            style: const TextStyle(
+                color: Color(0xff5F6060), fontWeight: FontWeight.bold)),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text(name, style: const TextStyle(fontSize: 16)),
+          Text(name,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           Text(formattedAmount,
               style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w800,
                   color: isPositiveTransaction
                       ? const Color(0xff0FDFAF)
                       : const Color(0xffDF0F0F)))
@@ -138,25 +143,26 @@ class PayeroButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var borderRadius = BorderRadius.circular(16);
+
     return InkWell(
-      onTap: () {
-        print("Click event on Container");
-      },
-      child: Ink(
-        height: 66,
-        decoration: BoxDecoration(
-          color: const Color(0xff0FDFAF),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Center(
-          child: Text(text,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Color(0xff393939))),
-        ),
-      ),
-    );
+        onTap: () {
+          print("Click event on Container");
+        },
+        borderRadius: borderRadius,
+        child: Ink(
+            height: 66,
+            decoration: BoxDecoration(
+              color: const Color(0xff0FDFAF),
+              borderRadius: borderRadius,
+            ),
+            child: Center(
+              child: Text(text,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Color(0xff393939))),
+            )));
   }
 }
 
@@ -170,10 +176,11 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       body: Column(children: [
         const Expanded(
-            child: Pane(
-          bottomOverlap: overlap,
-          children: [HeaderRow(), QrCode()],
-        )),
+          child: Pane(
+            bottomOverlap: overlap,
+            children: [HeaderRow(), QrCode()],
+          ),
+        ),
         Container(
             margin: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
             child: Column(children: [
@@ -189,3 +196,8 @@ class MainScreen extends StatelessWidget {
     );
   }
 }
+
+// TODO
+// - fix layout with too small gap of qr code
+// - flex layout with even gaps between HeaderRow, QrCode and TransactionHistory
+// - put background into absolute positioned widget

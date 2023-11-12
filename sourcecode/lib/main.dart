@@ -10,7 +10,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-        home: SplashScreen(), debugShowCheckedModeBanner: false);
+    return MaterialApp(
+        home: SplashScreen(),
+        theme: ThemeData(fontFamily: 'Nunito'),
+        debugShowCheckedModeBanner: false);
   }
 }

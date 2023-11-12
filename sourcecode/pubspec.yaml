@@ -20,3 +20,24 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/nunito/static/Nunito-Regular.ttf
+        - asset: assets/fonts/nunito/static/Nunito-Italic.ttf
+          style: italic
+        - asset: assets/fonts/nunito/static/Nunito-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/nunito/static/Nunito-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/nunito/static/Nunito-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/nunito/static/Nunito-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/nunito/static/Nunito-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/nunito/static/Nunito-ExtraBoldItalic.ttf
+          weight: 800
+          style: italic
