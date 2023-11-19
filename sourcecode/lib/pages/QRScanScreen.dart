@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRScanScreen extends StatelessWidget {
@@ -10,7 +11,12 @@ class QRScanScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('PayEro'),
+          title: SvgPicture.asset('assets/images/payero-logo.svg',
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.center,
+          height: 50.0,
+          ),
+          centerTitle: true,
           actions: [
             IconButton(
               color: Colors.white,
