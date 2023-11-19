@@ -17,6 +17,7 @@ class QRScanScreen extends StatelessWidget {
           height: 50.0,
           ),
           centerTitle: true,
+          backgroundColor: const Color(0xFFF3F5F7),
           actions: [
             IconButton(
               color: Colors.white,
