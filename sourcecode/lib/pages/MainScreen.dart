@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import 'package:mobile_computing_payment_app/pages/QRScanScreen.dart';
+
 class HeaderRow extends StatelessWidget {
   const HeaderRow({super.key});
 
@@ -147,7 +149,12 @@ class PayeroButton extends StatelessWidget {
 
     return InkWell(
         onTap: () {
-          print("Click event on Container");
+          // print("Click event on Container");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => QRScanScreen(),
+          ));
         },
         borderRadius: borderRadius,
         child: Ink(
