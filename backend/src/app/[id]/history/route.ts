@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import QRCode from "qrcode";
 
 export async function GET(
   request: Request,
@@ -24,18 +23,23 @@ export async function GET(
       );
     }
 
-    let payload = { namespace: "payero", id: user.id };
+    let transactions = await prisma.transaction.findMany({
+      where: {
+        senderId: user.id,
+      },
+      orderBy: { createdAt: "desc" },
+    });
 
-    let qrcode = await QRCode.toDataURL(JSON.stringify(payload));
-
-    var image = Buffer.from(qrcode.split(",")[1], "base64");
-    const response = new NextResponse(image);
-
-    response.headers.set("Content-Type", "image/png");
-
-    return response;
+    return Response.json({
+      success: true,
+      userId: user.id,
+      transactions: transactions,
+    });
   } catch (error) {
-    console.log(`Could not generate qr code for user <${params.id}>`, error);
+    console.log(
+      `Could not fetch transaction history for user <${params.id}>`,
+      error
+    );
 
     return Response.json(
       { success: false, error: "An error occured" },
