@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:flutter_braintree/flutter_braintree.dart';
 
 class QRScanScreen extends StatefulWidget {
-
   const QRScanScreen({super.key});
 
   @override
@@ -73,7 +73,8 @@ class _QRScanScreenState extends State<QRScanScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => FoundCodeScreen(screenClosed: _screenWasClosed, value: code),
+                builder: (context) => FoundCodeScreen(
+                    screenClosed: _screenWasClosed, value: code),
               ),
             );
           }
@@ -100,15 +101,76 @@ class FoundCodeScreen extends StatefulWidget {
   State<FoundCodeScreen> createState() => _FoundCodeScreenState();
 }
 
+// class _FoundCodeScreenState extends State<FoundCodeScreen> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: SvgPicture.asset('assets/images/payero-logo.svg',
+//         fit: BoxFit.scaleDown,
+//         alignment: Alignment.center,
+//         height: 50.0,
+//         ),
+//         backgroundColor: const Color(0xFFF3F5F7),
+//         centerTitle: true,
+//         leading: IconButton(
+//           onPressed: () {
+//             widget.screenClosed();
+//             Navigator.pop(context);
+//           },
+//           icon: const Icon(Icons.arrow_back_outlined,),
+//         ),
+//       ),
+//       body: Center(
+//         child: Padding(
+//           padding: const EdgeInsets.all(20),
+//           child: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               Text("Scanned Code:", style: TextStyle(fontSize: 20,),),
+//               SizedBox(height: 20,),
+//               Text(widget.value, style: TextStyle(fontSize: 16,),),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_braintree/flutter_braintree.dart';
+
 class _FoundCodeScreenState extends State<FoundCodeScreen> {
+  void startBraintreeCheckout() async {
+    var request = BraintreeDropInRequest(
+      tokenizationKey: 'sandbox_d53t3dpq_8fxhdjy2nrd33mtm',
+      collectDeviceData: true,
+      paypalRequest: BraintreePayPalRequest(
+        amount: '10.00',
+        displayName: 'Ihr Unternehmen',
+        currencyCode: 'EUR',
+      ),
+      // Weitere Optionen und Konfigurationen
+    );
+
+    BraintreeDropInResult? result = await BraintreeDropIn.start(request);
+    if (result != null) {
+      print('Zahlung erfolgreich: ${result.paymentMethodNonce.description}');
+      // Weitere Aktionen nach erfolgreicher Zahlung
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: SvgPicture.asset('assets/images/payero-logo.svg',
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.center,
-        height: 50.0,
+        title: SvgPicture.asset(
+          'assets/images/payero-logo.svg',
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.center,
+          height: 50.0,
         ),
         backgroundColor: const Color(0xFFF3F5F7),
         centerTitle: true,
@@ -117,7 +179,9 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
             widget.screenClosed();
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back_outlined,),
+          icon: const Icon(
+            Icons.arrow_back_outlined,
+          ),
         ),
       ),
       body: Center(
@@ -126,9 +190,28 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Scanned Code:", style: TextStyle(fontSize: 20,),),
-              SizedBox(height: 20,),
-              Text(widget.value, style: TextStyle(fontSize: 16,),),
+              Text(
+                "Scanned Code:",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                widget.value,
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                onPressed: startBraintreeCheckout,
+                child: Text('Bezahlen'),
+              ),
             ],
           ),
         ),
