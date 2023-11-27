@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:mobile_computing_payment_app/pages/QRScanScreen.dart';
+import 'package:mobile_computing_payment_app/pages/SettingsScreen.dart';
 
 class HeaderRow extends StatelessWidget {
   const HeaderRow({super.key});
@@ -16,14 +17,22 @@ class HeaderRow extends StatelessWidget {
           SvgPicture.asset('assets/images/payero-logo-with-title.svg',
               semanticsLabel: 'Payero', width: 150),
           Positioned(
-            right: 0,
-            child: IconButton(
-              icon: const Icon(Icons.settings, size: 30),
-              onPressed: () {
-                // Handle cog wheel icon press
-              },
-            ),
-          ),
+              right: 0,
+              child: Material(
+                color: Colors.transparent,
+                child: IconButton(
+                  icon: const Icon(Icons.settings, size: 30),
+                  splashRadius: 24,
+                  splashColor: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SettingsScreen(),
+                        ));
+                  },
+                ),
+              )),
         ],
       ),
     );
