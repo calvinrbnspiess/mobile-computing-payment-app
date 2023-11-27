@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3007:3000"
+    volumes:
+      - ./prisma/database.db:/usr/src/prisma/database.db
+    env_file:
+      - .production.env
