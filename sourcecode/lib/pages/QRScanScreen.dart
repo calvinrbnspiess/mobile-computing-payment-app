@@ -149,8 +149,13 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
       collectDeviceData: true,
       paypalRequest: BraintreePayPalRequest(
         amount: '10.00',
-        displayName: 'Ihr Unternehmen',
+        displayName: 'Payero',
         currencyCode: 'EUR',
+      ),
+      googlePaymentRequest: BraintreeGooglePaymentRequest(
+        totalPrice: '10.00',
+        currencyCode: 'EUR',
+        billingAddressRequired: false,
       ),
       // Weitere Optionen und Konfigurationen
     );
