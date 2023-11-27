@@ -35,14 +35,16 @@ class QrCode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.all(14),
-        margin: const EdgeInsets.only(top: 18),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: const Color(0xFFD6D6D6), width: 1),
-            borderRadius: const BorderRadius.all(Radius.circular(16))),
-        child: Image.asset('assets/images/sample-qr-code.png', width: 200));
+    return Flexible(
+        child: Container(
+            constraints: BoxConstraints(minHeight: 0, maxHeight: 200),
+            padding: const EdgeInsets.all(14),
+            margin: const EdgeInsets.only(top: 18, bottom: 18),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: const Color(0xFFD6D6D6), width: 1),
+                borderRadius: const BorderRadius.all(Radius.circular(16))),
+            child: Image.asset('assets/images/sample-qr-code.png')));
   }
 }
 
@@ -113,32 +115,6 @@ class TransactionHistory extends StatelessWidget {
   }
 }
 
-class Pane extends StatelessWidget {
-  final List<Widget> children;
-  final double bottomOverlap;
-
-  const Pane({super.key, this.bottomOverlap = 0, required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(
-            bottom: 30 + bottomOverlap, top: 60, left: 30, right: 30),
-        decoration: BoxDecoration(
-            color: const Color(0xFFF3F5F7),
-            border: Border.all(color: const Color(0xFFD6D6D6), width: 1),
-            borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(24),
-                bottomRight: Radius.circular(24))),
-        child: Column(
-          children: children,
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        ));
-  }
-}
-
 class PayeroButton extends StatelessWidget {
   const PayeroButton({this.text = "", super.key});
   final String text;
@@ -151,10 +127,10 @@ class PayeroButton extends StatelessWidget {
         onTap: () {
           // print("Click event on Container");
           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => QRScanScreen(),
-          ));
+              context,
+              MaterialPageRoute(
+                builder: (_) => const QRScanScreen(),
+              ));
         },
         borderRadius: borderRadius,
         child: Ink(
@@ -173,38 +149,53 @@ class PayeroButton extends StatelessWidget {
   }
 }
 
+class BackgroundPane extends StatelessWidget {
+  const BackgroundPane({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: MediaQuery.of(context).size.height * 0.33,
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+              color: const Color(0xFFF3F5F7),
+              border: Border.all(color: const Color(0xFFD6D6D6), width: 1),
+              borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(24),
+                  bottomRight: Radius.circular(24))),
+        ));
+  }
+}
+
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const double overlap = 75;
-
     return Scaffold(
-      body: Column(children: [
-        const Expanded(
-          child: Pane(
-            bottomOverlap: overlap,
-            children: [HeaderRow(), QrCode()],
+        body: Stack(children: [
+      const BackgroundPane(),
+      Column(children: [
+        Expanded(
+          child: Container(
+            padding:
+                const EdgeInsets.only(bottom: 30, top: 60, left: 30, right: 30),
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [HeaderRow(), QrCode(), TransactionHistory()],
+            ),
           ),
         ),
         Container(
             margin: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
-            child: Column(children: [
-              Container(
-                transform: Matrix4.translationValues(0.0, overlap * -1.0, 0.0),
-                child: const Column(children: [
-                  TransactionHistory(),
-                ]),
-              ),
-              const PayeroButton(text: "Zum Bezahlen Scannen"),
+            child: const Column(children: [
+              PayeroButton(text: "Zum Bezahlen Scannen"),
             ]))
       ]),
-    );
+    ]));
   }
 }
-
-// TODO
-// - fix layout with too small gap of qr code
-// - flex layout with even gaps between HeaderRow, QrCode and TransactionHistory
-// - put background into absolute positioned widget
