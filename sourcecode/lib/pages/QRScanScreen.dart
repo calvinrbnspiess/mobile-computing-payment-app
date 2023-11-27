@@ -157,6 +157,24 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
         currencyCode: 'EUR',
         billingAddressRequired: false,
       ),
+      applePayRequest: BraintreeApplePayRequest(
+        paymentSummaryItems: [
+          ApplePaySummaryItem(
+              label: 'Payero',
+              amount: 10.00,
+              type: ApplePaySummaryItemType.final_)
+        ],
+        displayName: 'Payero',
+        currencyCode: 'EUR',
+        countryCode: 'DE',
+        merchantIdentifier:
+            'merchant.com.yourcompany.yourapp', // Ersetzen Sie dies mit Ihrem Apple Pay Merchant Identifier
+        supportedNetworks: [
+          ApplePaySupportedNetworks.visa,
+          ApplePaySupportedNetworks.masterCard,
+          ApplePaySupportedNetworks.amex
+        ],
+      ),
       // Weitere Optionen und Konfigurationen
     );
 
