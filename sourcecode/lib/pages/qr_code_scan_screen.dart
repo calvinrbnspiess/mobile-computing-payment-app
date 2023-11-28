@@ -67,7 +67,10 @@ class _QRScanScreenState extends State<QRScanScreen> {
                 builder: (context) => FoundCodeScreen(
                     screenClosed: _screenWasClosed, value: code),
               ),
-            );
+            ).then((_) {
+              // Diese Zeile wird ausgeführt, wenn FoundCodeScreen geschlossen wird
+              _screenWasClosed();
+            });
           }
         },
       ),
@@ -98,12 +101,12 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
       tokenizationKey: 'sandbox_d53t3dpq_8fxhdjy2nrd33mtm',
       collectDeviceData: true,
       paypalRequest: BraintreePayPalRequest(
-        amount: '10.00',
+        amount: widget.value,
         displayName: 'Payero',
         currencyCode: 'EUR',
       ),
       googlePaymentRequest: BraintreeGooglePaymentRequest(
-        totalPrice: '10.00',
+        totalPrice: widget.value,
         currencyCode: 'EUR',
         billingAddressRequired: false,
       ),
@@ -111,7 +114,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
         paymentSummaryItems: [
           ApplePaySummaryItem(
               label: 'Payero',
-              amount: 10.00,
+              amount: double.parse(widget.value),
               type: ApplePaySummaryItemType.final_)
         ],
         displayName: 'Payero',
