@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mobile_computing_payment_app/pages/settings_screen.dart';
 
 class HeaderRow extends StatelessWidget {
   const HeaderRow({super.key});
@@ -18,7 +19,11 @@ class HeaderRow extends StatelessWidget {
             child: IconButton(
               icon: const Icon(Icons.settings, size: 30),
               onPressed: () {
-                // Handle cog wheel icon press
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const SettingsScreen(),
+                    ));
               },
             ),
           ),
