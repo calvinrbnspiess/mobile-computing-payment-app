@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class PayeroHeader extends StatelessWidget implements PreferredSizeWidget {
-  const PayeroHeader({this.showBackButton = true, super.key});
+  const PayeroHeader({this.showBackButton = true, this.actions, super.key});
   final bool showBackButton;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +21,7 @@ class PayeroHeader extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: const Color(0xFFF3F5F7),
       centerTitle: true,
       automaticallyImplyLeading: false,
+      actions: actions ?? [],
       leading: showBackButton
           ? IconButton(
               onPressed: () {

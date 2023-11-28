@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile_computing_payment_app/widgets/payero_header.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_braintree/flutter_braintree.dart';
 
@@ -17,50 +18,40 @@ class _QRScanScreenState extends State<QRScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: SvgPicture.asset(
-          'assets/images/payero-logo.svg',
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.center,
-          height: 50.0,
+      appBar: PayeroHeader(showBackButton: true, actions: [
+        IconButton(
+          color: Colors.white,
+          icon: ValueListenableBuilder(
+            valueListenable: cameraController.torchState,
+            builder: (context, state, child) {
+              switch (state as TorchState) {
+                case TorchState.off:
+                  return const Icon(Icons.flash_off, color: Colors.grey);
+                case TorchState.on:
+                  return const Icon(Icons.flash_on, color: Colors.yellow);
+              }
+            },
+          ),
+          iconSize: 32.0,
+          onPressed: () => cameraController.toggleTorch(),
         ),
-        centerTitle: true,
-        backgroundColor: const Color(0xFFF3F5F7),
-        actions: [
-          IconButton(
-            color: Colors.white,
-            icon: ValueListenableBuilder(
-              valueListenable: cameraController.torchState,
-              builder: (context, state, child) {
-                switch (state as TorchState) {
-                  case TorchState.off:
-                    return const Icon(Icons.flash_off, color: Colors.grey);
-                  case TorchState.on:
-                    return const Icon(Icons.flash_on, color: Colors.yellow);
-                }
-              },
-            ),
-            iconSize: 32.0,
-            onPressed: () => cameraController.toggleTorch(),
+        IconButton(
+          color: Colors.white,
+          icon: ValueListenableBuilder(
+            valueListenable: cameraController.cameraFacingState,
+            builder: (context, state, child) {
+              switch (state as CameraFacing) {
+                case CameraFacing.front:
+                  return const Icon(Icons.camera_front, color: Colors.grey);
+                case CameraFacing.back:
+                  return const Icon(Icons.camera_rear, color: Colors.grey);
+              }
+            },
           ),
-          IconButton(
-            color: Colors.white,
-            icon: ValueListenableBuilder(
-              valueListenable: cameraController.cameraFacingState,
-              builder: (context, state, child) {
-                switch (state as CameraFacing) {
-                  case CameraFacing.front:
-                    return const Icon(Icons.camera_front, color: Colors.grey);
-                  case CameraFacing.back:
-                    return const Icon(Icons.camera_rear, color: Colors.grey);
-                }
-              },
-            ),
-            iconSize: 32.0,
-            onPressed: () => cameraController.switchCamera(),
-          ),
-        ],
-      ),
+          iconSize: 32.0,
+          onPressed: () => cameraController.switchCamera(),
+        )
+      ]),
       body: MobileScanner(
         startDelay: true,
         controller: cameraController,
@@ -160,25 +151,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: SvgPicture.asset(
-          'assets/images/payero-logo.svg',
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.center,
-          height: 50.0,
-        ),
-        backgroundColor: const Color(0xFFF3F5F7),
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            widget.screenClosed();
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back_outlined,
-          ),
-        ),
-      ),
+      appBar: const PayeroHeader(showBackButton: true),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
