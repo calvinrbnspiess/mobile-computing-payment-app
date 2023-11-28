@@ -19,6 +19,7 @@ class PayeroHeader extends StatelessWidget implements PreferredSizeWidget {
       ),
       backgroundColor: const Color(0xFFF3F5F7),
       centerTitle: true,
+      automaticallyImplyLeading: false,
       leading: showBackButton
           ? IconButton(
               onPressed: () {

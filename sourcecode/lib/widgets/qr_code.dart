@@ -14,9 +14,6 @@ class QrCode extends StatefulWidget {
 class QrCodeState extends State<QrCode> {
   String? userId;
 
-  // show spinner
-  // check user preferences, if user_id -> show image
-
   Future<void> fetchUserPreferences() async {
     final prefs = await SharedPreferences.getInstance();
 
