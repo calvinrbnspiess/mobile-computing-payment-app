@@ -130,7 +130,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
         currencyCode: 'EUR',
         countryCode: 'DE',
         merchantIdentifier:
-            'merchant.com.yourcompany.yourapp', // Ersetzen Sie dies mit Ihrem Apple Pay Merchant Identifier
+            'merchant.com.payero.mobilecomputingpaymentapp', // Ersetzen Sie dies mit Ihrem Apple Pay Merchant Identifier
         supportedNetworks: [
           ApplePaySupportedNetworks.visa,
           ApplePaySupportedNetworks.masterCard,
