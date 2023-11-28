@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mobile_computing_payment_app/widgets/payero_header.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -7,27 +8,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.black, //change your color here
-          ),
-          title: SvgPicture.asset(
-            'assets/images/payero-logo.svg',
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.center,
-            height: 50.0,
-          ),
-          backgroundColor: const Color(0xFFF3F5F7),
-          centerTitle: true,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back_outlined,
-            ),
-          ),
-        ),
+        appBar: const PayeroHeader(),
         body: Stack(children: [
           Column(children: [
             Expanded(
