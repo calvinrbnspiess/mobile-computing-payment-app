@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:flutter_braintree/flutter_braintree.dart';
 
 class QRScanScreen extends StatefulWidget {
   const QRScanScreen({super.key});
@@ -101,6 +102,61 @@ class FoundCodeScreen extends StatefulWidget {
 }
 
 class _FoundCodeScreenState extends State<FoundCodeScreen> {
+  void startBraintreeCheckout() async {
+    var request = BraintreeDropInRequest(
+      tokenizationKey: 'sandbox_d53t3dpq_8fxhdjy2nrd33mtm',
+      collectDeviceData: true,
+      paypalRequest: BraintreePayPalRequest(
+        amount: '10.00',
+        displayName: 'Payero',
+        currencyCode: 'EUR',
+      ),
+      googlePaymentRequest: BraintreeGooglePaymentRequest(
+        totalPrice: '10.00',
+        currencyCode: 'EUR',
+        billingAddressRequired: false,
+      ),
+      applePayRequest: BraintreeApplePayRequest(
+        paymentSummaryItems: [
+          ApplePaySummaryItem(
+              label: 'Payero',
+              amount: 10.00,
+              type: ApplePaySummaryItemType.final_)
+        ],
+        displayName: 'Payero',
+        currencyCode: 'EUR',
+        countryCode: 'DE',
+        merchantIdentifier:
+            'merchant.com.example.mobile_computing_payment_app', // Ersetzen Sie dies mit Ihrem Apple Pay Merchant Identifier
+        supportedNetworks: [
+          ApplePaySupportedNetworks.visa,
+          ApplePaySupportedNetworks.masterCard,
+          ApplePaySupportedNetworks.amex
+        ],
+      ),
+      // Weitere Optionen und Konfigurationen
+    );
+    try {
+      BraintreeDropInResult? result = await BraintreeDropIn.start(request);
+      if (result != null) {
+        print('Zahlung erfolgreich: ${result.paymentMethodNonce.description}');
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bearbeite Zahlungsvorgang')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                'Zahlung erfolgreich: ${result.paymentMethodNonce.description}')));
+        // Weitere Aktionen nach erfolgreicher Zahlung
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Zahlvorgang abgebrochen')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'Zahlvorgang abgebrochen. Stellen Sie sicher, dass Sie eine Internetverbindung haben. Fehler: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,20 +185,27 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                "Scanned Code:",
+              const Text(
+                "Zu bezahlender Betrag:",
                 style: TextStyle(
                   fontSize: 20,
                 ),
               ),
-              SizedBox(
-                height: 20,
+              const SizedBox(
+                height: 50,
               ),
               Text(
-                widget.value,
-                style: TextStyle(
-                  fontSize: 16,
+                '${widget.value} €',
+                style: const TextStyle(
+                  fontSize: 40,
                 ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                onPressed: startBraintreeCheckout,
+                child: const Text('Bezahlen'),
               ),
             ],
           ),
