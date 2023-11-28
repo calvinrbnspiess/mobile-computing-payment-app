@@ -17,26 +17,33 @@ class QrCodeState extends State<QrCode> {
   // show spinner
   // check user preferences, if user_id -> show image
 
-  @override
-  Widget build(BuildContext context) {
-    Future(() async {
-      final prefs = await SharedPreferences.getInstance();
+  Future<void> fetchUserPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
 
-      setState(() {
-        userId = prefs.getString('user_id');
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(userId ?? "No user id found"),
-        ),
-      );
+    setState(() {
+      userId = prefs.getString('user_id');
     });
 
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(userId ?? "No user id found"),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    fetchUserPreferences();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Flexible(
         child: Container(
             constraints: BoxConstraints(minHeight: 0, maxHeight: 200),
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(4),
             margin: const EdgeInsets.only(top: 18, bottom: 18),
             decoration: BoxDecoration(
                 color: Colors.white,
