@@ -3,8 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_computing_payment_app/pages/main_screen.dart';
 import 'package:mobile_computing_payment_app/widgets/payero_button.dart';
 import 'package:mobile_computing_payment_app/widgets/payero_header.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -17,6 +19,7 @@ class RegistrationScreen extends StatefulWidget {
 
 class RegistrationScreenState extends State<RegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
+  final Map<String, dynamic> textFieldsValue = {};
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +52,9 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                                 if (value == null || value.isEmpty) {
                                   return 'Bitte überlasse uns einen Namen';
                                 }
+
+                                textFieldsValue.putIfAbsent(
+                                    'nickname', () => value);
                                 return null;
                               },
                               decoration: const InputDecoration(
@@ -57,7 +63,15 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                             ),
                             TextFormField(
                               validator: (value) {
-                                return EmailValidator.validate(value ?? "")
+                                var emailIsValid =
+                                    EmailValidator.validate(value ?? "");
+
+                                if (emailIsValid) {
+                                  textFieldsValue.putIfAbsent(
+                                      'email', () => value);
+                                }
+
+                                return emailIsValid
                                     ? null
                                     : "Bitte überprüfe deine E-Mail-Adresse";
                               },
@@ -77,16 +91,45 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                   PayeroButton(
                     text: "Registrierung abschließen",
                     onClick: () {
-                      if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')));
-
-                        http.post(Uri.parse("http://localhost:3000/register"),
-                            body: jsonEncode(<String, String>{
-                              'name': "",
-                              'email': "",
-                            }));
+                      if (!_formKey.currentState!.validate()) {
+                        return;
                       }
+
+                      Future(() async {
+                        final response = await http.post(
+                            Uri.parse("http://localhost:3000/register"),
+                            body: jsonEncode(<String, String>{
+                              'nickname': textFieldsValue['nickname'],
+                              'email': textFieldsValue['email'],
+                            }));
+
+                        if (response.statusCode == 200) {
+                          final prefs = await SharedPreferences.getInstance();
+                          final Map parsed = json.decode(response.body);
+
+                          prefs.setString('user_id', parsed['id']);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'Registrierung erfolgreich: ' + parsed['id']),
+                            ),
+                          );
+
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const MainScreen(),
+                              ));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Es ist ein Fehler aufgetreten. Bitte versuche es später erneut.'),
+                            ),
+                          );
+                        }
+                      });
                     },
                   )
                 ]))
