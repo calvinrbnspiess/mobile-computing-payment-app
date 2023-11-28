@@ -27,35 +27,42 @@ class _MainScreenState extends State<MainScreen> {
   String? qrcodeUrl;
   List<Transaction> transactions = [];
 
-  Future<void> fetchUserPreferences() async {
+  Future<void> fetchGlobalState() async {
     debugPrint("Fetching user preferences");
     final prefs = await SharedPreferences.getInstance();
 
-    setState(() {
-      nickname = prefs.getString('nickname');
-      userId = prefs.getString('user_id');
-      qrcodeUrl = "$SERVER_URL/${userId!}/qr";
-    });
+    List<Transaction> transactionItems = [];
+
+    String? prefUserId = prefs.getString('user_id');
 
     final response =
-        await http.get(Uri.parse("$SERVER_URL/${userId!}/history"));
+        await http.get(Uri.parse("$SERVER_URL/${prefUserId!}/history"));
 
     if (response.statusCode != 200) {
-      debugPrint("failed to fetch transactions" + response.body);
+      debugPrint("failed to fetch transactions${response.body}");
     } else {
-      final List<dynamic> transactionsJson =
+      List<dynamic> transactionsJson =
           jsonDecode(response.body)["transactions"];
-      transactions =
+
+      transactionItems =
           transactionsJson.map((e) => Transaction.fromJson(e)).toList();
-      debugPrint("transactions: " + response.body);
+
+      debugPrint("transactions list: " + transactionItems.toString());
     }
+
+    setState(() {
+      nickname = prefs.getString('nickname');
+      userId = prefUserId;
+      qrcodeUrl = "$SERVER_URL/${userId!}/qr";
+      transactions = transactionItems;
+    });
   }
 
   @override
   void initState() {
     super.initState();
 
-    fetchUserPreferences();
+    fetchGlobalState();
   }
 
   @override
@@ -87,7 +94,9 @@ class _MainScreenState extends State<MainScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const QRScanScreen(),
+                              builder: (_) => QRScanScreen(
+                                userId: userId ?? "",
+                              ),
                             ))
                       }),
             ]))

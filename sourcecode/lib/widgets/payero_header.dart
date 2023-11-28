@@ -22,6 +22,7 @@ class PayeroHeader extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       automaticallyImplyLeading: false,
       actions: actions ?? [],
+      elevation: 0,
       leading: showBackButton
           ? IconButton(
               onPressed: () {

@@ -22,7 +22,7 @@ class Transaction {
     id = json['id'];
     senderId = json['senderId'];
     receiver = json['receiver'];
-    amount = json['amount'];
+    amount = json['amount'].toDouble() ?? 0;
     currency = json['currency'];
     message = json['message'];
     createdAt = json['createdAt'];

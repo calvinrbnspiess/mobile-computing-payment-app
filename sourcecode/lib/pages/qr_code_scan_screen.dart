@@ -174,14 +174,17 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
         // Weitere Aktionen nach erfolgreicher Zahlung
 
         try {
+          if (widget.userId == "") {
+            throw Exception("userId is empty");
+          }
+
           final response = await http.post(
               Uri.parse("$SERVER_URL/${widget.userId}/transact"),
               body: jsonEncode(<String, String>{
                 "receiver": "mobile_computing_payment_app",
-                "amount": widget.value,
+                "amount": '${double.parse(widget.value) * -1}',
                 "currency": currency,
-                "message":
-                    "${result.paymentMethodNonce.typeLabel} - ${result.paymentMethodNonce.description}"
+                "message": "${result.paymentMethodNonce.description}"
               }));
 
           debugPrint("response: " + response.body);
