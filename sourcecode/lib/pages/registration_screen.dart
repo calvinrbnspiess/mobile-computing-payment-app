@@ -98,7 +98,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                       Future(() async {
                         try {
                           final response = await http.post(
-                              Uri.parse("http://localhost:3000/register"),
+                              Uri.parse("http://172.20.10.14:3000/register"),
                               body: jsonEncode(<String, String>{
                                 'nickname': textFieldsValue['nickname'],
                                 'email': textFieldsValue['email'],
