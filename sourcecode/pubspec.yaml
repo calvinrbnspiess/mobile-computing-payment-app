@@ -1,5 +1,5 @@
 name: mobile_computing_payment_app
-description: A new Flutter project.
+description: Payero is a payment app designed to use QR codes and pay with Braintree.
 publish_to: "none"
 version: 0.1.0
 
@@ -20,6 +20,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+  rename_app: ^1.3.1
 
 flutter:
   uses-material-design: true

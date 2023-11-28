@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_computing_payment_app/constants.dart';
+import 'package:mobile_computing_payment_app/pages/end_screen.dart';
+import 'package:mobile_computing_payment_app/widgets/payero_button.dart';
 import 'package:mobile_computing_payment_app/widgets/payero_header.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_braintree/flutter_braintree.dart';
@@ -78,7 +80,10 @@ class _QRScanScreenState extends State<QRScanScreen> {
                     userId: userId,
                     value: code),
               ),
-            );
+            ).then((_) {
+              // Diese Zeile wird ausgeführt, wenn FoundCodeScreen geschlossen wird
+              _screenWasClosed();
+            });
           }
         },
       ),
@@ -114,12 +119,12 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
       tokenizationKey: 'sandbox_d53t3dpq_8fxhdjy2nrd33mtm',
       collectDeviceData: true,
       paypalRequest: BraintreePayPalRequest(
-        amount: '10.00',
+        amount: widget.value,
         displayName: 'Payero',
         currencyCode: currency,
       ),
       googlePaymentRequest: BraintreeGooglePaymentRequest(
-        totalPrice: '10.00',
+        totalPrice: widget.value,
         currencyCode: currency,
         billingAddressRequired: false,
       ),
@@ -127,7 +132,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
         paymentSummaryItems: [
           ApplePaySummaryItem(
               label: 'Payero',
-              amount: 10.00,
+              amount: double.parse(widget.value),
               type: ApplePaySummaryItemType.final_)
         ],
         displayName: 'Payero',
@@ -146,12 +151,26 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
     try {
       BraintreeDropInResult? result = await BraintreeDropIn.start(request);
       if (result != null) {
-        print('Zahlung erfolgreich: ${result.paymentMethodNonce.description}');
+        // print(
+        //     'Zahlung erfolgreich: ${result.paymentMethodNonce.typeLabel} ${result.paymentMethodNonce.description}');
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Bearbeite Zahlungsvorgang')));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-                'Zahlung erfolgreich: ${result.paymentMethodNonce.description}')));
+          SnackBar(
+              content: Text(
+                  'Bearbeite Zahlungsvorgang mit ${result.paymentMethodNonce.typeLabel} ${result.paymentMethodNonce.description}'),
+              duration: const Duration(seconds: 2)),
+        );
+
+        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        //   content: Text(
+        //       'Zahlung erfolgreich: ${result.paymentMethodNonce.typeLabel} ${result.paymentMethodNonce.description}'),
+        //   duration: const Duration(seconds: 2),
+        // ));
+
+        await Future.delayed(const Duration(seconds: 3));
+
+        Navigator.push(context,
+            MaterialPageRoute(builder: (_) => EndScreen(value: widget.value)));
+
         // Weitere Aktionen nach erfolgreicher Zahlung
 
         try {
@@ -159,7 +178,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
               Uri.parse("$SERVER_URL/${widget.userId}/transact"),
               body: jsonEncode(<String, String>{
                 "receiver": "mobile_computing_payment_app",
-                "amount": "0",
+                "amount": widget.value,
                 "currency": currency,
                 "message":
                     "${result.paymentMethodNonce.typeLabel} - ${result.paymentMethodNonce.description}"
@@ -174,13 +193,14 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
           debugPrint(e.toString());
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Zahlvorgang abgebrochen')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Zahlungsvorgang abgebrochen'),
+            duration: Duration(seconds: 2)));
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
-              'Zahlvorgang abgebrochen. Stellen Sie sicher, dass Sie eine Internetverbindung haben. Fehler: $e')));
+              'Zahlungsvorgang abgebrochen. Stellen Sie sicher, dass Sie mit dem Internet verbunden sind. \n\n Fehler: $e')));
     }
   }
 
@@ -201,7 +221,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
                 ),
               ),
               const SizedBox(
-                height: 50,
+                height: 30,
               ),
               Text(
                 '${widget.value} €',
@@ -210,11 +230,11 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 30,
               ),
-              ElevatedButton(
-                onPressed: startBraintreeCheckout,
-                child: const Text('Bezahlen'),
+              PayeroButton(
+                onClick: startBraintreeCheckout,
+                text: 'Jetzt Bezahlen',
               ),
             ],
           ),
