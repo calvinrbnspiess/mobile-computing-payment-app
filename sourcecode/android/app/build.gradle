@@ -64,4 +64,7 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation 'io.card:android-sdk:5.+'
+    implementation 'com.braintreepayments.api:browser-switch:2.6.0'
+}

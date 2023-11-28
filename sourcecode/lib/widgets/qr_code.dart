@@ -47,7 +47,7 @@ class QrCodeState extends State<QrCode> {
                 border: Border.all(color: const Color(0xFFD6D6D6), width: 1),
                 borderRadius: const BorderRadius.all(Radius.circular(16))),
             child: userId != null
-                ? Image.network("http://localhost:3000/$userId/qr")
+                ? Image.network("http://46.252.16.34:3137/$userId/qr")
                 : new CircularProgressIndicator()));
   }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Ermöglichen Sie die Nutzung von Klartext-Verkehr für alle Domänen. -->
+    <!-- Dies ist nicht empfohlen und sollte nur verwendet werden, wenn absolut notwendig. -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <!-- Vertrauen Sie systemeigenen CA-Zertifikaten und von Benutzern installierten Zertifikaten -->
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Spezifische Konfigurationen für bestimmte Domänen können hier hinzugefügt werden. -->
+    <!-- <domain-config>
+        <domain includeSubdomains="true">IhreSichereDomain.com</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config> -->
+</network-security-config>
