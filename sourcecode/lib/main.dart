@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_computing_payment_app/pages/SplashScreen.dart';
 import 'package:flutter/services.dart';
+import 'package:mobile_computing_payment_app/pages/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +17,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: SplashScreen(),
+        home: const SplashScreen(),
         theme: ThemeData(fontFamily: 'Nunito'),
         debugShowCheckedModeBanner: false);
   }
