@@ -1,3 +1,6 @@
+// import 'dart:html';
+// import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -181,7 +184,15 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
     BraintreeDropInResult? result = await BraintreeDropIn.start(request);
     if (result != null) {
       print('Zahlung erfolgreich: ${result.paymentMethodNonce.description}');
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Bearbeite Zahlungsvorgang')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'Zahlung erfolgreich: ${result.paymentMethodNonce.description}')));
       // Weitere Aktionen nach erfolgreicher Zahlung
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Zahlung abgebrochen')));
     }
   }
 
