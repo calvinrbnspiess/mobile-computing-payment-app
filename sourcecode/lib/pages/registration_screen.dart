@@ -96,14 +96,18 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                       }
 
                       Future(() async {
-                        final response = await http.post(
-                            Uri.parse("http://localhost:3000/register"),
-                            body: jsonEncode(<String, String>{
-                              'nickname': textFieldsValue['nickname'],
-                              'email': textFieldsValue['email'],
-                            }));
+                        try {
+                          final response = await http.post(
+                              Uri.parse("http://localhost:3000/register"),
+                              body: jsonEncode(<String, String>{
+                                'nickname': textFieldsValue['nickname'],
+                                'email': textFieldsValue['email'],
+                              }));
 
-                        if (response.statusCode == 200) {
+                          if (response.statusCode != 200) {
+                            throw Exception('Failed to create user account.');
+                          }
+
                           final prefs = await SharedPreferences.getInstance();
                           final Map parsed = json.decode(response.body);
 
@@ -115,13 +119,12 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                                   'Registrierung erfolgreich: ' + parsed['id']),
                             ),
                           );
-
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const MainScreen(),
                               ));
-                        } else {
+                        } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
