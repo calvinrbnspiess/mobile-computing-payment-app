@@ -51,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     setState(() {
-      nickname = prefs.getString('nickname');
+      nickname = prefs.getString('user_nickname');
       userId = prefUserId;
       qrcodeUrl = "$SERVER_URL/${userId!}/qr";
       transactions = transactionItems;
@@ -78,7 +78,10 @@ class _MainScreenState extends State<MainScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const HeaderRow(),
+                HeaderRow(
+                  userId: userId ?? "",
+                  nickname: nickname ?? "",
+                ),
                 QrCode(url: qrcodeUrl),
                 TransactionHistory(transactions: transactions)
               ],
