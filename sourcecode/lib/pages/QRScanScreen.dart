@@ -130,7 +130,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
         currencyCode: 'EUR',
         countryCode: 'DE',
         merchantIdentifier:
-            'merchant.com.payero.mobilecomputingpaymentapp', // Ersetzen Sie dies mit Ihrem Apple Pay Merchant Identifier
+            'merchant.com.example.mobile_computing_payment_app', // Ersetzen Sie dies mit Ihrem Apple Pay Merchant Identifier
         supportedNetworks: [
           ApplePaySupportedNetworks.visa,
           ApplePaySupportedNetworks.masterCard,
@@ -195,7 +195,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 50,
               ),
               Text(
                 '${widget.value} €',
@@ -204,7 +204,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
                 ),
               ),
               const SizedBox(
-                height: 50,
+                height: 20,
               ),
               ElevatedButton(
                 onPressed: startBraintreeCheckout,

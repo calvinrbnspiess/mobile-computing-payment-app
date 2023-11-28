@@ -56,7 +56,7 @@
 		<string>Editor</string>
 		<key>CFBundleURLSchemes</key>
 		<array>
-		<string>com.payero.mobilecomputingpaymentapp.payments</string> <!-- Ersetzen Sie mit Ihrem URL-Schema -->
+		<string>com.example.mobile_computing_payment_app.payments</string> <!-- Ersetzen Sie mit Ihrem URL-Schema -->
 		</array>
 	</dict>
 	</array>
