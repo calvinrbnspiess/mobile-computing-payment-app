@@ -104,47 +104,6 @@ class FoundCodeScreen extends StatefulWidget {
   State<FoundCodeScreen> createState() => _FoundCodeScreenState();
 }
 
-// class _FoundCodeScreenState extends State<FoundCodeScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: SvgPicture.asset('assets/images/payero-logo.svg',
-//         fit: BoxFit.scaleDown,
-//         alignment: Alignment.center,
-//         height: 50.0,
-//         ),
-//         backgroundColor: const Color(0xFFF3F5F7),
-//         centerTitle: true,
-//         leading: IconButton(
-//           onPressed: () {
-//             widget.screenClosed();
-//             Navigator.pop(context);
-//           },
-//           icon: const Icon(Icons.arrow_back_outlined,),
-//         ),
-//       ),
-//       body: Center(
-//         child: Padding(
-//           padding: const EdgeInsets.all(20),
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               Text("Scanned Code:", style: TextStyle(fontSize: 20,),),
-//               SizedBox(height: 20,),
-//               Text(widget.value, style: TextStyle(fontSize: 16,),),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:flutter_braintree/flutter_braintree.dart';
-
 class _FoundCodeScreenState extends State<FoundCodeScreen> {
   void startBraintreeCheckout() async {
     var request = BraintreeDropInRequest(
@@ -180,19 +139,24 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
       ),
       // Weitere Optionen und Konfigurationen
     );
-
-    BraintreeDropInResult? result = await BraintreeDropIn.start(request);
-    if (result != null) {
-      print('Zahlung erfolgreich: ${result.paymentMethodNonce.description}');
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Bearbeite Zahlungsvorgang')));
+    try {
+      BraintreeDropInResult? result = await BraintreeDropIn.start(request);
+      if (result != null) {
+        print('Zahlung erfolgreich: ${result.paymentMethodNonce.description}');
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bearbeite Zahlungsvorgang')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                'Zahlung erfolgreich: ${result.paymentMethodNonce.description}')));
+        // Weitere Aktionen nach erfolgreicher Zahlung
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Zahlvorgang abgebrochen')));
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
-              'Zahlung erfolgreich: ${result.paymentMethodNonce.description}')));
-      // Weitere Aktionen nach erfolgreicher Zahlung
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Zahlung abgebrochen')));
+              'Zahlvorgang abgebrochen. Stellen Sie sicher, dass Sie eine Internetverbindung haben. Fehler: $e')));
     }
   }
 
@@ -224,27 +188,27 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                "Scanned Code:",
+              const Text(
+                "Zu bezahlender Betrag:",
                 style: TextStyle(
                   fontSize: 20,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Text(
-                widget.value,
-                style: TextStyle(
-                  fontSize: 16,
+                '${widget.value} €',
+                style: const TextStyle(
+                  fontSize: 40,
                 ),
               ),
-              SizedBox(
-                height: 20,
+              const SizedBox(
+                height: 50,
               ),
               ElevatedButton(
                 onPressed: startBraintreeCheckout,
-                child: Text('Bezahlen'),
+                child: const Text('Bezahlen'),
               ),
             ],
           ),
