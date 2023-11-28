@@ -84,9 +84,10 @@ class TransactionHistory extends StatelessWidget {
           border: Border.all(color: const Color(0xFFD6D6D6), width: 1),
           borderRadius: const BorderRadius.all(Radius.circular(16))),
       child: Container(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
               minHeight: 210), // Minimum height for the container
-          child: Column(children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Text(
               "Letzte Transaktionen",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
