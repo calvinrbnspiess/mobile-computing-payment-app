@@ -2,38 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class QrCode extends StatefulWidget {
-  const QrCode({super.key});
+class QrCode extends StatelessWidget {
+  final String? url;
 
-  @override
-  QrCodeState createState() {
-    return QrCodeState();
-  }
-}
-
-class QrCodeState extends State<QrCode> {
-  String? userId;
-
-  Future<void> fetchUserPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    setState(() {
-      userId = prefs.getString('user_id');
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(userId ?? "No user id found"),
-      ),
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    fetchUserPreferences();
-  }
+  const QrCode({this.url, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +18,8 @@ class QrCodeState extends State<QrCode> {
                 color: Colors.white,
                 border: Border.all(color: const Color(0xFFD6D6D6), width: 1),
                 borderRadius: const BorderRadius.all(Radius.circular(16))),
-            child: userId != null
-                ? Image.network("http://46.252.16.34:3137/$userId/qr")
+            child: url != null
+                ? Image.network(url!)
                 : new CircularProgressIndicator()));
   }
 }

@@ -1,19 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile_computing_payment_app/constants.dart';
 import 'package:mobile_computing_payment_app/widgets/payero_header.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_braintree/flutter_braintree.dart';
+import 'package:http/http.dart' as http;
 
 class QRScanScreen extends StatefulWidget {
-  const QRScanScreen({super.key});
+  final String userId;
+
+  const QRScanScreen({super.key, required this.userId});
 
   @override
-  State<QRScanScreen> createState() => _QRScanScreenState();
+  State<QRScanScreen> createState() => _QRScanScreenState(userId: userId);
 }
 
 class _QRScanScreenState extends State<QRScanScreen> {
   MobileScannerController cameraController = MobileScannerController();
   bool _screenOpened = false;
+  final String userId;
+
+  _QRScanScreenState({required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +74,9 @@ class _QRScanScreenState extends State<QRScanScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => FoundCodeScreen(
-                    screenClosed: _screenWasClosed, value: code),
+                    screenClosed: _screenWasClosed,
+                    userId: userId,
+                    value: code),
               ),
             );
           }
@@ -82,8 +93,11 @@ class _QRScanScreenState extends State<QRScanScreen> {
 class FoundCodeScreen extends StatefulWidget {
   final String value;
   final Function() screenClosed;
+  final String userId;
+
   const FoundCodeScreen({
     Key? key,
+    required this.userId,
     required this.value,
     required this.screenClosed,
   }) : super(key: key);
@@ -93,6 +107,8 @@ class FoundCodeScreen extends StatefulWidget {
 }
 
 class _FoundCodeScreenState extends State<FoundCodeScreen> {
+  String currency = "EUR";
+
   void startBraintreeCheckout() async {
     var request = BraintreeDropInRequest(
       tokenizationKey: 'sandbox_d53t3dpq_8fxhdjy2nrd33mtm',
@@ -100,11 +116,11 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
       paypalRequest: BraintreePayPalRequest(
         amount: '10.00',
         displayName: 'Payero',
-        currencyCode: 'EUR',
+        currencyCode: currency,
       ),
       googlePaymentRequest: BraintreeGooglePaymentRequest(
         totalPrice: '10.00',
-        currencyCode: 'EUR',
+        currencyCode: currency,
         billingAddressRequired: false,
       ),
       applePayRequest: BraintreeApplePayRequest(
@@ -115,7 +131,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
               type: ApplePaySummaryItemType.final_)
         ],
         displayName: 'Payero',
-        currencyCode: 'EUR',
+        currencyCode: currency,
         countryCode: 'DE',
         merchantIdentifier:
             'merchant.com.example.mobile_computing_payment_app', // Ersetzen Sie dies mit Ihrem Apple Pay Merchant Identifier
@@ -137,6 +153,26 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
             content: Text(
                 'Zahlung erfolgreich: ${result.paymentMethodNonce.description}')));
         // Weitere Aktionen nach erfolgreicher Zahlung
+
+        try {
+          final response = await http.post(
+              Uri.parse("$SERVER_URL/${widget.userId}/transact"),
+              body: jsonEncode(<String, String>{
+                "receiver": "mobile_computing_payment_app",
+                "amount": "0",
+                "currency": currency,
+                "message":
+                    "${result.paymentMethodNonce.typeLabel} - ${result.paymentMethodNonce.description}"
+              }));
+
+          debugPrint("response: " + response.body);
+
+          if (response.statusCode != 200) {
+            throw Exception('Failed to save transaction.' + response.body);
+          }
+        } catch (e) {
+          debugPrint(e.toString());
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Zahlvorgang abgebrochen')));

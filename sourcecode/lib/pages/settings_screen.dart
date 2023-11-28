@@ -31,7 +31,7 @@ class SettingsScreen extends StatelessWidget {
                         onClick: () async {
                           final prefs = await SharedPreferences.getInstance();
 
-                          prefs.remove('user_id');
+                          prefs.clear();
 
                           Navigator.push(
                               context,
