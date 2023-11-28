@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile_computing_payment_app/pages/end_screen.dart';
+import 'package:mobile_computing_payment_app/widgets/payero_button.dart';
 import 'package:mobile_computing_payment_app/widgets/payero_header.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_braintree/flutter_braintree.dart';
@@ -133,21 +135,36 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
     try {
       BraintreeDropInResult? result = await BraintreeDropIn.start(request);
       if (result != null) {
-        print('Zahlung erfolgreich: ${result.paymentMethodNonce.description}');
+        // print(
+        //     'Zahlung erfolgreich: ${result.paymentMethodNonce.typeLabel} ${result.paymentMethodNonce.description}');
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Bearbeite Zahlungsvorgang')));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-                'Zahlung erfolgreich: ${result.paymentMethodNonce.description}')));
+          SnackBar(
+              content: Text(
+                  'Bearbeite Zahlungsvorgang mit ${result.paymentMethodNonce.typeLabel} ${result.paymentMethodNonce.description}'),
+              duration: const Duration(seconds: 2)),
+        );
+
+        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        //   content: Text(
+        //       'Zahlung erfolgreich: ${result.paymentMethodNonce.typeLabel} ${result.paymentMethodNonce.description}'),
+        //   duration: const Duration(seconds: 2),
+        // ));
+
+        await Future.delayed(const Duration(seconds: 3));
+
+        Navigator.push(context,
+            MaterialPageRoute(builder: (_) => EndScreen(value: widget.value)));
+
         // Weitere Aktionen nach erfolgreicher Zahlung
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Zahlvorgang abgebrochen')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Zahlungsvorgang abgebrochen'),
+            duration: Duration(seconds: 2)));
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
-              'Zahlvorgang abgebrochen. Stellen Sie sicher, dass Sie eine Internetverbindung haben. Fehler: $e')));
+              'Zahlungsvorgang abgebrochen. Stellen Sie sicher, dass Sie mit dem Internet verbunden sind. \n\n Fehler: $e')));
     }
   }
 
@@ -168,7 +185,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
                 ),
               ),
               const SizedBox(
-                height: 50,
+                height: 30,
               ),
               Text(
                 '${widget.value} €',
@@ -177,11 +194,11 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 30,
               ),
-              ElevatedButton(
-                onPressed: startBraintreeCheckout,
-                child: const Text('Bezahlen'),
+              PayeroButton(
+                onClick: startBraintreeCheckout,
+                text: 'Jetzt Bezahlen',
               ),
             ],
           ),
