@@ -116,7 +116,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                           final Map parsed = json.decode(response.body);
 
                           prefs.setString('user_id', parsed['id']);
-                          prefs.setString('user_nickname', parsed['nickname']);
+                          prefs.setString('user_nickname', parsed['username']);
                           prefs.setString('user_email', parsed['email']);
 
                           Navigator.push(
