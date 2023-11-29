@@ -71,19 +71,49 @@ class _QRScanScreenState extends State<QRScanScreen> {
           if (barcodes.isNotEmpty && !_screenOpened) {
             final String code = barcodes.first.rawValue ?? "---";
             debugPrint('QRCode found! $code');
-            _screenOpened = true;
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FoundCodeScreen(
+            try {
+              final Map<String, dynamic> data = jsonDecode(code);
+
+              // Überprüfen Sie, ob der Namespace 'payero' ist
+              if (data['namespace'] != 'payero') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Ungültiger QR-Code')),
+                );
+                return; // Beenden der Funktion, wenn der Namespace nicht stimmt
+              }
+
+              // Überprüfen, ob der 'amount' zu einem double konvertiert werden kann
+              final double? amount = double.tryParse(data['amount'].toString());
+              if (amount == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Ungültiger QR-Code')),
+                );
+                return; // Beenden der Funktion, wenn der amount ungültig ist
+              }
+
+              final String formattedAmount = amount.toStringAsFixed(2);
+
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+              // Weitermachen mit gültigen Daten
+              _screenOpened = true;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FoundCodeScreen(
                     screenClosed: _screenWasClosed,
                     userId: userId,
-                    value: code),
-              ),
-            ).then((_) {
-              // Diese Zeile wird ausgeführt, wenn FoundCodeScreen geschlossen wird
-              _screenWasClosed();
-            });
+                    value: formattedAmount,
+                  ),
+                ),
+              ).then((_) => _screenWasClosed());
+            } catch (e) {
+              debugPrint("Error while scanning: ${e.toString()}");
+              // Generische Fehlermeldung anzeigen
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Ungültiger QR-Code')),
+              );
+            }
           }
         },
       ),
@@ -116,7 +146,8 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
 
   void startBraintreeCheckout() async {
     var request = BraintreeDropInRequest(
-      tokenizationKey: 'sandbox_d53t3dpq_8fxhdjy2nrd33mtm',
+      tokenizationKey:
+          'sandbox_d53t3dpq_8fxhdjy2nrd33mtm', // Ersetzen mit echtem tokenizationKey aus BrainTree Account
       collectDeviceData: true,
       paypalRequest: BraintreePayPalRequest(
         amount: widget.value,
@@ -139,7 +170,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
         currencyCode: currency,
         countryCode: 'DE',
         merchantIdentifier:
-            'merchant.com.example.mobile_computing_payment_app', // Ersetzen Sie dies mit Ihrem Apple Pay Merchant Identifier
+            'merchant.com.example.mobile_computing_payment_app', // Ersetzen mit echtem Apple Pay Merchant Identifier
         supportedNetworks: [
           ApplePaySupportedNetworks.visa,
           ApplePaySupportedNetworks.masterCard,
