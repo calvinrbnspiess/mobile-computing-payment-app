@@ -3,7 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mobile_computing_payment_app/pages/settings_screen.dart';
 
 class HeaderRow extends StatelessWidget {
-  const HeaderRow({super.key});
+  final String userId;
+  final String nickname;
+
+  const HeaderRow({super.key, required this.userId, required this.nickname});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,10 @@ class HeaderRow extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const SettingsScreen(),
+                      builder: (_) => SettingsScreen(
+                        userId: userId,
+                        nickname: nickname,
+                      ),
                     ));
               },
             ),

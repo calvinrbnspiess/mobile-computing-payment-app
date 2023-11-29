@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_computing_payment_app/constants.dart';
 import 'package:mobile_computing_payment_app/pages/main_screen.dart';
 import 'package:mobile_computing_payment_app/widgets/payero_button.dart';
 import 'package:mobile_computing_payment_app/widgets/payero_header.dart';
@@ -58,7 +59,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                                 return null;
                               },
                               decoration: const InputDecoration(
-                                hintText: 'Nickname',
+                                hintText: 'Spitzname',
                               ),
                             ),
                             TextFormField(
@@ -97,34 +98,34 @@ class RegistrationScreenState extends State<RegistrationScreen> {
 
                       Future(() async {
                         try {
-                          final response = await http.post(
-                              Uri.parse("http://46.252.16.34:3137/register"),
-                              body: jsonEncode(<String, String>{
-                                'nickname': textFieldsValue['nickname'],
-                                'email': textFieldsValue['email'],
-                              }));
+                          final response =
+                              await http.post(Uri.parse("$SERVER_URL/register"),
+                                  body: jsonEncode(<String, String>{
+                                    'nickname': textFieldsValue['nickname'],
+                                    'email': textFieldsValue['email'],
+                                  }));
+
+                          debugPrint("response: " + response.body);
 
                           if (response.statusCode != 200) {
-                            throw Exception('Failed to create user account.');
+                            throw Exception('Failed to create user account.' +
+                                response.body);
                           }
 
                           final prefs = await SharedPreferences.getInstance();
                           final Map parsed = json.decode(response.body);
 
                           prefs.setString('user_id', parsed['id']);
+                          prefs.setString('user_nickname', parsed['nickname']);
+                          prefs.setString('user_email', parsed['email']);
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  'Registrierung erfolgreich: ' + parsed['id']),
-                            ),
-                          );
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const MainScreen(),
                               ));
                         } catch (e) {
+                          debugPrint(e.toString());
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(

@@ -24,7 +24,7 @@ export async function GET(
       );
     }
 
-    let payload = { namespace: "payero", id: user.id };
+    let payload = { namespace: "payero", id: user.id, amount: "2.0" };
 
     let qrcode = await QRCode.toDataURL(JSON.stringify(payload));
 
