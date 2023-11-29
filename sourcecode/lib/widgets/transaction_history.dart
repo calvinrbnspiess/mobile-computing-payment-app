@@ -3,6 +3,12 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_computing_payment_app/classes/Transaction.dart';
 
+String truncateWithEllipsis(int cutoff, String myString) {
+  return (myString.length <= cutoff)
+      ? myString
+      : '${myString.substring(0, cutoff)}...';
+}
+
 String getFriendlyTimeDifferenceFromNow(String timestamp) {
   DateTime now = DateTime.now();
   DateTime utcTime = DateTime.parse(timestamp);
@@ -44,7 +50,7 @@ class TransactionEntry extends StatelessWidget {
                 style: const TextStyle(
                     color: Color(0xff5F6060), fontWeight: FontWeight.bold)),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text(message,
+              Text(truncateWithEllipsis(20, message),
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.w600)),
               Text(formattedAmount,
