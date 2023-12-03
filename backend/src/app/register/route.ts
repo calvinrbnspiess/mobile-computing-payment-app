@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     return Response.json({
       success: true,
       id: user.id,
-      nickname: user.nickname,
+      username: user.nickname,
       email: user.email,
     });
   } catch (error) {
