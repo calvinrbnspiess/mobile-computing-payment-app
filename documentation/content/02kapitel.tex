@@ -1,3 +1,43 @@
 %!TEX root = ../dokumentation.tex
 
-\chapter{Konzept und Design}
+\chapter{Zielsetzung}
+
+Ziel des Projektes ist die Realisierung einer plattformunabhängigen App.
+Dies geschieht mit dem Framework Flutter und der dazugehörigen Programmiersprache Dart.
+Die App soll dabei einen Bezahlvorgang durch das Scannen eines QR-Codes ermöglichen.
+Unsere App trägt den Namen \glqq Payero\grqq{} und läuft auf iOS und Android.
+Die App bietet folgende Funktionen:
+
+\begin{itemize}
+    \item Scannen eines QR-Codes
+    \begin{itemize}
+        \item Nur Payero eigene QR-Codes zulassen
+        \item BenutzerID im QR-Code hinterlegen
+        \item Betrag im QR-Code hinterlegen
+    \end{itemize}
+    \item Anbieten mehrerer Bezahlverfahren
+    \begin{itemize}
+        \item PayPal
+        \item Kreditkarten
+        \begin{itemize}
+            \item VISA
+            \item Mastercard
+            \item AMEX (über GooglePay und ApplePay)
+        \end{itemize}
+        \item GooglePay
+        \item ApplePay (nach Eingabe einer gültigen Merchant-ID)
+    \end{itemize}
+    \item Datenbankanbindung
+    \begin{itemize}
+        \item Speichert BenutzerID
+        \item Speichert Transaktionen eines Benutzers
+        \item Erzeugt dynamische nutzerspezifische QR-Codes
+    \end{itemize}
+    \item Benutzerkonto
+    \begin{itemize}
+        \item Enthält Transaktionshistorie
+        \item Enthält eigenen QR-Code
+    \end{itemize}
+    \item Einfache Bedienbarkeit durch Benutzer
+    \item Designlanguage mit einer eigenen Corporate Identity mit MaterialDesign
+\end{itemize}
