@@ -5,9 +5,90 @@
 Dieses Kapitel beinhaltet sämtliche Implementierungen und Features in der App.
 Dabei werden benutzte Libraries und Code aus der App gezeigt.
 
-\section{App}
+\section{App Tour}
 
-Hier screenshots und erklärung
+Im Folgenden wird der Ablauf eines Bezahlvorgangs vom Start der App bis zu ihrer Beendigung dargestellt.\\
+Beim Start der App wird man mit einem SplashScreen begrüßt.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth, height=.8\textwidth]{splashscreen.png}
+  \caption{SplashScreen}
+\end{figure}
+
+Danach erfolgt beim ersten Start der Anwendung die Registrierung eines Benutzerkontos.
+Dabei wird geprüft, ob die Felder ausgefüllt sind und ob eine E-Mail-Adresse im richtigen Format angegeben ist.
+Dieser Schritt wird übersprungen, wenn bereits bei einer früheren Nutzung ein Benutzerkonto angelegt wurde.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth, height=.8\textwidth]{registration.png}
+  \caption{Registrierungsvorgang}
+\end{figure}
+
+Danach gelangt man ins Hauptmenü.
+Falls bereits ein Benutzerkonto besteht, gelangt man direkt nach dem SplashScreen ins Hauptmenü.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth, height=.8\textwidth]{mainscreen_start.png}
+  \caption{Hauptmenü}
+\end{figure}
+
+Im Hauptmenü finden Sie einen mit Ihrem Benutzerkonto verknüpften QR-Code, den Sie einscannen und herunterladen können.
+Außerdem kann eine Transaktionshistorie mit den letzten drei Zahlungen eingesehen werden.
+Ganz unten befindet sich ein Button.
+Mit diesem wird der Bezahlvorgang gestartet.
+In der rechten oberen Ecke befindet sich ein Icon für die Einstellungen.
+Ein Klick darauf öffnet die Einstellungsseite.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth, height=.8\textwidth]{settings.png}
+  \caption{Einstellungen}
+\end{figure}
+
+Auf der Einstellungsseite sieht man seinen Benutzernamen und die dazugehörige ID.
+Auch die Version der Anwendung ist hier aufgelistet.
+Man kann sich auch von seinem Benutzerkonto abmelden.
+Geht man nun zurück ins Hauptmenü und startet den Bezahlvorgang mit einem Klick auf den Button, öffnet sich eine neue Seite.
+Hier wird die Kameraberechtigung zum Einscannen eines QR-Codes abgefragt.
+Dabei wird geprüft, ob es sich bei diesem QR-Code auch um einen Payero-QR-Code handelt.
+Ist dies nicht der Fall, wird dies so angezeigt:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth, height=.8\textwidth]{scan_wrong_qr.png}
+  \caption{Ungültiger QR-Code}
+\end{figure}
+
+Eine SnackBar weist den Benutzer darauf hin, dass es sich nicht um einen gültigen QR-Code handelt.
+Zusätzlich kann der Benutzer oben rechts durch Klick auf das entsprechende Icon den Kamerablitz aktivieren, falls es zu dunkel zum Scannen ist.
+Es ist auch möglich, die Frontkamera zu aktivieren und zwischen dieser und der Rückkamera zu wechseln, indem man auf das entsprechende Symbol klickt.
+Das Scannen eines QR-Codes erfolgt automatisch.
+Der Benutzer muss dazu keine Schaltflächen anklicken.
+Wird ein gültiger QR-Code erkannt, wird der Benutzer automatisch auf eine Bestätigungsseite weitergeleitet.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth, height=.8\textwidth]{scan_good_qr.png}
+  \caption{Bestätigungsseite}
+\end{figure}
+
+Auf dieser Seite wird der Benutzer über den zu zahlenden Betrag informiert.
+Durch Anklicken des Buttons kann der Benutzer den Bezahlvorgang starten oder über den Zurück-Button abbrechen.
+Beim Start des Bezahlvorgangs öffnet sich ein Dropin-Fenster.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth, height=.8\textwidth]{payment_option.png}
+  \caption{Bezahlmethoden}
+\end{figure}
+
+Hier sieht der Benutzer sämtliche verfügbaren Bezahlmethoden.
+Darunter gehören immer PayPal und Kreditkarte.
+Unter Android gehört auch GooglePay dazu, während ApplePay unter iOS möglich wäre aber nicht vorhanden ist aufgrund des fehlenden Development Accounts.
+
 
 \section{Transaktionshistorie}
 Die Transaktionshistorie wurde komplett mithilfe von den zwei selbst entwickelten Widgets TransactionHistory und TransactionEntry implementiert.
