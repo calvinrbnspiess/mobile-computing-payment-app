@@ -11,10 +11,10 @@ Hier screenshots und erklärung
 
 \section{QR-Code Scanner}
 
-Zum Erkennen und Scannen der QR-Codes wird die Library ``mobile\_scanner'' in der Version ``3.5.2'' genutzt.
+Zum Erkennen und Scannen der QR-Codes wird die Library \glqq mobile\_scanner\grqq{} in der Version \glqq 3.5.2\grqq{} genutzt.
 Diese arbeitet sowohl unter iOS als auch Android zuverlässig.
-Die Integration findet in der ``qr\_code\_scan\_screen.dart'' Datei statt.
-Es wird hierzu die Klasse ``\_QRScanScreenState'' erstellt in welcher die Funktionen der Library implementiert werden.
+Die Integration findet in der \glqq qr\_code\_scan\_screen.dart\grqq{} Datei statt.
+Es wird hierzu die Klasse \glqq \_QRScanScreenState\grqq{} erstellt in welcher die Funktionen der Library implementiert werden.
 Unter anderem ist hier die Steuerung der Kamera, das Wechseln zwischen Front- und Rückkamera möglich und die Steuerung des Kamerablitzes möglich.
 
 \begin{lstlisting}[caption=Kamerasteuerung, label=cam_ctrl]
@@ -137,9 +137,9 @@ Der dazugehörige QR-Code sieht dann so aus:
 \end{figure}
 
 Beim Anzeigen des Betrages innerhalb der App wird auf jeder Page ausschließlich der Betrag mit zwei Nachkommastellen angezeigt.
-Dies ist unabhängig davon, ob der ``amount'' im QR-Code Nachkommastellen beinhaltet, und dient ausschließlich kosmetischer Eigenschaften, verbessert aber das Nutzererlebnis aufgrund der immer gleichen Formatierung.
+Dies ist unabhängig davon, ob der \glqq amount\grqq{} im QR-Code Nachkommastellen beinhaltet, und dient ausschließlich kosmetischer Eigenschaften, verbessert aber das Nutzererlebnis aufgrund der immer gleichen Formatierung.
 Dies betrifft auch die QR-Codes, welche im Hauptmenü eingescannt werden können.
-Um zu verhindern, dass immer weiter gescannt wird, wenn ein QR-Code gefunden wurde, wird ein bool Flag gesetzt über den Parameter ``\_screenOpened''.
+Um zu verhindern, dass immer weiter gescannt wird, wenn ein QR-Code gefunden wurde, wird ein bool Flag gesetzt über den Parameter \glqq \_screenOpened\grqq{}.
 Anschließend wird bei einem gültigen QR-Code zu einer neuen Page gewechselt.
 Diese zeigt den zu bezahlenden Betrag an und einen Button mit dem bezahlt werden kann.
 Durch Klick auf den Button öffnet sich das BrainTree DropinUI.
@@ -151,7 +151,7 @@ Es wird momentan PayPal, Kreditkarte (VISA, Mastercard) und GooglePay angeboten.
 ApplePay ist auch implementiert, aber es muss noch eine gültige Merchant-ID angegeben werden, um die Funktion zu aktivieren.
 Diese Merchant-ID ist ausschließlich mit einem Abonnement des Apple Developer Programm erhältlich.
 Des Weiteren wird ausschließlich der Sandbox Account von Braintree verwendet, da es als Privatperson ohne Unternehmen mit gültiger Umsatzsteueridentifikationsnummer und Angabe der Besitzanteile an der Firma bzw. der Position innerhalb dieser nicht möglich ist einen Produktivaccount zu bekommen aufgrund \S\S 10 - 17 des Geldwäschegesetzes.
-Wenn man in Besitz eines gültigen Braintree Produktivaccount ist, muss man nur den ``tokenizationKey'' austauschen, um die App produktiv zu schalten.
+Wenn man in Besitz eines gültigen Braintree Produktivaccount ist, muss man nur den \glqq tokenizationKey\grqq{} austauschen, um die App produktiv zu schalten.
 
 \begin{lstlisting}[caption={BrainTree Bezahlmethoden}]
   class _FoundCodeScreenState extends State<FoundCodeScreen> {
@@ -262,12 +262,12 @@ Anschließend landet der Benutzer auf einer Abschlussseite, wenn der Bezahlvorga
 }
 \end{lstlisting}
 
-Auf dieser Abschlussseite ``end\_screen.dart'' wird der Benutzer über den erfolgreich bezahlten Betrag informiert.
-Anschließend kann er noch den Vorgang mit dem ``Fertig'' Button abschließen, um wieder im Hauptmenü zu landen.
+Auf dieser Abschlussseite \glqq end\_screen.dart\grqq{} wird der Benutzer über den erfolgreich bezahlten Betrag informiert.
+Anschließend kann er noch den Vorgang mit dem \glqq Fertig\grqq{} Button abschließen, um wieder im Hauptmenü zu landen.
 Damit kann ein neuer Bezahlvorgang gestartet werden.
-Der ``Zurück'' Button ist auf dieser Seite extra unterbunden, damit ein Anwender nicht doch aus Versehen wieder auf der Bezahlseite landet und den Betrag erneut bezahlt.
+Der \glqq Zurück\grqq{} Button ist auf dieser Seite extra unterbunden, damit ein Anwender nicht doch aus Versehen wieder auf der Bezahlseite landet und den Betrag erneut bezahlt.
 Dabei ist auch der Hardware Button unter Android mit eingeschlossen, da sonst auch bei Deaktivieren in der Software ein zurück über diesen möglich ist.
-Dies geschieht bei Android mit ``onWillPop''.
+Dies geschieht bei Android mit \glqq onWillPop\grqq{}.
 
 \begin{lstlisting}[caption={EndScreen bei erfolgreichem Bezahlvorgang}]
   class EndScreen extends StatelessWidget {
