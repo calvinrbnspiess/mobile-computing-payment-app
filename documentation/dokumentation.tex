@@ -65,22 +65,18 @@
 	\cleardoublepage
 	% \input{ads/acronyms}
 
-	% Changelog
-	\cleardoublepage
-	\input{ads/changelog}
-
 	% Abbildungsverzeichnis
- 	\listoffigures
+ 	% \listoffigures
 
 	%Tabellenverzeichnis
 	\cleardoublepage
 	% \listoftables
 
-	% Quellcodeverzeichnis
-	\cleardoublepage
-	\renewcommand{\lstlistingname}{Quellcode}
-	\renewcommand{\lstlistlistingname}{\lstlistingname verzeichnis}
-	\lstlistoflistings
+	% % Quellcodeverzeichnis
+	% \cleardoublepage
+	% \renewcommand{\lstlistingname}{Quellcode}
+	% \renewcommand{\lstlistlistingname}{\lstlistingname verzeichnis}
+	% \lstlistoflistings
 	\cleardoublepage
 
 	\pagenumbering{arabic}
@@ -99,6 +95,21 @@
 	}
 
 	\clearpage
+
+	\pagenumbering{Roman}
+
+	% Changelog
+	\cleardoublepage
+	\input{ads/changelog}
+
+	% Abbildungsverzeichnis
+	\listoffigures
+
+	% Quellcodeverzeichnis
+	\cleardoublepage
+	\renewcommand{\lstlistingname}{Quellcode}
+	\renewcommand{\lstlistlistingname}{\lstlistingname verzeichnis}
+	\lstlistoflistings
 
 	% Literaturverzeichnis
 	\cleardoublepage
