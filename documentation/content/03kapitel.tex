@@ -118,7 +118,7 @@ Der Benutzer wird darüber in einer SnackBar informiert.
   }
 \end{lstlisting}
 
-Das gültige Format eines QR-Codes sieht so aus:
+Das gültige Format eines QR-Codes ist in JSON und sieht so aus:
 
 \begin{lstlisting}[caption={Gültiger QR-Code}]
   {
@@ -127,6 +127,14 @@ Das gültige Format eines QR-Codes sieht so aus:
    "amount":"3.00"
   }
 \end{lstlisting}
+
+Der dazugehörige QR-Code sieht dann so aus:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth, height=.8\textwidth]{qr-code.png}
+  \caption{Gültiger QR-Code}
+\end{figure}
 
 Beim Anzeigen des Betrages innerhalb der App wird auf jeder Page ausschließlich der Betrag mit zwei Nachkommastellen angezeigt.
 Dies ist unabhängig davon, ob der ``amount'' im QR-Code Nachkommastellen beinhaltet, und dient ausschließlich kosmetischer Eigenschaften, verbessert aber das Nutzererlebnis aufgrund der immer gleichen Formatierung.
