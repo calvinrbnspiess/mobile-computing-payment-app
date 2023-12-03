@@ -271,7 +271,7 @@ Der entsprechende QR-Code sieht dann so aus:
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=.8\textwidth, height=.8\textwidth]{qr-code.png}
+  \includegraphics[width=.3\textwidth, height=.3\textwidth]{qr-code.png}
   \caption{Gültiger QR-Code}
 \end{figure}
 
@@ -466,6 +466,17 @@ Dies geschieht bei Android mit \glqq onWillPop\grqq{}.
   }
 }
 \end{lstlisting}
+
+\section{Benutzer-Authentifizierung}
+
+Beim Starten der App wird im SplashScreen geprüft, ob eine user\_id in den SharedPreferences abgelegt wurde.
+Sofern der Wert existiert, wird anschließend zum MainScreen weitergeleitet.
+Ansonsten wird der RegistrationScreen ausgespielt. Im RegistrationScreen existieren zwei Eingabefelder für den Spitznamen und eine E-Mail-Adresse.
+Diese werden wie im folgenden Kapitel beschrieben an das Backend übergeben.
+Die Eingabefelder wurden mithilfe des TextFormField-Widgets gebaut, mit denen auch eine validator()-Funktion definiert werden kann.
+Über diese wird sichergestellt, dass beide Felder ausgefüllt sind und die E-Mail-Adresse ein gültiges Format hat.
+Nach dem Betätigen des Buttons wird der Post-Request /register ausgeführt und die vom Backend zurückgegebene UUID in den SharedPreferences gespeichert.
+Anschließend erfolgt eine Überleitung zum MainScreen.
 
 \section{Backend}
 
