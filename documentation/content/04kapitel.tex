@@ -153,7 +153,7 @@ Das Verhalten wird in Abbildung \ref{fig:transactionhistory} dargestellt.
 Zum Erkennen und Scannen der QR-Codes wird die Library \glqq mobile\_scanner\grqq{} in der Version \glqq 3.5.2\grqq{} genutzt.
 Diese arbeitet sowohl unter iOS als auch Android zuverlässig.
 Die Integration findet in der \glqq qr\_code\_scan\_screen.dart\grqq{} Datei statt.
-Es wird hierzu die Klasse \glqq \_QRScanScreenState\grqq{} erstellt in welcher die Funktionen der Library implementiert werden.
+Es wird hierzu die Klasse \glqq \_QRScanScreenState\grqq{} erstellt, in welcher die Funktionen der Library implementiert werden.
 Unter anderem ist hier die Steuerung der Kamera, das Umschalten zwischen Front- und Rückkamera und die Steuerung des Kamerablitzes möglich.
 
 \begin{lstlisting}[caption=Kamerasteuerung, label=cam_ctrl]
@@ -288,7 +288,7 @@ Ein Klick auf den Button öffnet das BrainTree Dropin-UI.
 Die Zahlungsmethode kann im BrainTree Dropin-UI ausgewählt werden.
 Derzeit werden PayPal, Kreditkarte (VISA, Mastercard) und GooglePay angeboten.
 ApplePay ist ebenfalls implementiert, jedoch muss eine gültige Merchant-ID angegeben werden, um die Funktion zu aktivieren.
-Diese Merchant-ID ist nur mit einer Mitgliedschaft im Apple Developer Program erhältlich.
+Diese Merchant-ID ist nur mit einer Mitgliedschaft im Apple Developer Programm erhältlich.
 Darüber hinaus wird ausschließlich der Sandbox-Account von Braintree genutzt, da es als Privatperson ohne gültige Umsatzsteuer-Identifikationsnummer und wahrheitsgemäße Angaben zu den Eigentumsverhältnissen oder der Stellung im Unternehmen gemäß \S\S 10 bis 17 Geldwäschegesetz nicht möglich ist, einen Produktiv-Account zu erhalten.
 Ist man im Besitz eines gültigen Braintree-Produktivaccounts, muss lediglich der \glqq tokenizationKey\grqq{} ausgetauscht werden, um die Anwendung produktiv zu schalten.
 
@@ -490,7 +490,7 @@ Das heißt, dass mithilfe von Prisma eine Datenbankstruktur in Form der Datei ./
 Prisma erstellt daraufhin eine Tabellenstruktur und sichert diese in der SQLite-Datenbank ./backend/prisma/database.db.
 Der Prisma-Client wird dann innerhalb der Next.js-Anwendung aufgerufen und erlaubt die Abfrage der Datenbank in einer objekt-notierten Form, die ebenfalls bereits alle Relationen enthält.
 Zur Umsetzung des Datenbank-Schemas wurde das in Abbildung \ref{fig:er_diagramm} dargestellte Entity-Relationship-Diagramm in Chen-Notation entworfen.
-Ein Benutzer kann mehrere Transkationen empfangen haben, aber auch durchgeführt haben.
+Ein Benutzer kann mehrere Transaktionen empfangen haben, aber auch durchgeführt haben.
 Eine Transaktion hat immer einen Empfänger und einen Absender.
 
 \begin{figure}[H]
@@ -540,4 +540,4 @@ Ebenfalls enthält der QR-Code die Benutzer-UUID und den Betrag als Gleitkommaza
 
 \subsection{Sicherheit}
 
-Für eine produktive Nutzung der App sollte eine echte Authentifzierung über das Backend implementiert werden. Ebenso sollte sichergestellt werden, dass die QR-Codes nach der Erstellung nicht manipuliert werden können. Dies könnte etwa durch ein Public-Key-Verschlüsselungsverfahren sichergestellt werden. Als Implementierung könnten etwa JSON-Web-Tokens genutzt werden, die auf diesem Verfahren basieren. Ein weiterer Vorteil würde darin liegen, dass der QR-Code nicht beim Scannen mithilfe einer anderen App auslesbar wäre.
+Für eine produktive Nutzung der App sollte eine echte Authentifizierung über das Backend implementiert werden. Ebenso sollte sichergestellt werden, dass die QR-Codes nach der Erstellung nicht manipuliert werden können. Dies könnte etwa durch ein Public-Key-Verschlüsselungsverfahren sichergestellt werden. Als Implementierung könnten etwa JSON-Web-Tokens genutzt werden, die auf diesem Verfahren basieren. Ein weiterer Vorteil würde darin liegen, dass der QR-Code nicht beim Scannen mithilfe einer anderen App auslesbar wäre.
