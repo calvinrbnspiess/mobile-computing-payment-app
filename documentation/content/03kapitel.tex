@@ -9,6 +9,28 @@ Dabei werden benutzte Libraries und Code aus der App gezeigt.
 
 Hier screenshots und erklärung
 
+\section{Transaktionshistorie}
+Die Transaktionshistorie wurde komplett mithilfe von den zwei selbst entwickelten Widgets TransactionHistory und TransactionEntry implementiert.
+Diese sind beide stateless, bekommen ihre Inhalte also vom MainScreen in Form eines Arrays übergeben.\\
+Die TransactionHistory stellt mithilfe der take()-Funktion die ersten drei Einträge des übergebenen Arrays dar, wodurch nur die aktuellsten Transaktionen angezeigt werden.
+Sofern keine Transaktionen vorhanden sind, wird ein Text dargestellt.\\
+Im TransactionEntry wird ein Eintrag mit dem Zeitstempel der Transaktion, der Beschreibung und dem Betrag gerendert.
+Ausgehende Transaktionen stellen negative Werte dar und werden in roter Farbe dargestellt.
+Andernfalls werden die Beträge grün dargestellt.\\
+Bei der Überweisung per Kreditkarte kam es zu dem Problem, dass sehr lange Beschreibungstexte abgespeichert wurden.
+Um ein horizontales Überlaufen zu verhindern, wird der Text daher nach 20 Zeichen abgeschnitten.\\
+Ebenfalls wurde eingebaut, dass die Zeitstempel formatiert je nach Alter als etwa „Gerade eben“, „Vor 24 Minuten“, „16:43 Uhr“ oder im Format „23.11.2023 16:00“ ausgegeben werden.
+Das Verhalten wird in Abbildung \ref{fig:transactionhistory} dargestellt.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics{onetransaction.png}
+  \includegraphics{overflowingtransaction.png}
+  \includegraphics{multipletransactions.png}
+  \label{fig:transactionhistory}
+  \caption{Darstellung der Transaktionshistorie in verschiedenen Fällen, mit einer Transaktion, ohne Textkürzung, und mit mehreren Transaktionen.}
+\end{figure}
+
 \section{QR-Code Scanner}
 
 Zum Erkennen und Scannen der QR-Codes wird die Library \glqq mobile\_scanner\grqq{} in der Version \glqq 3.5.2\grqq{} genutzt.
@@ -338,7 +360,7 @@ Diese wird mithilfe des Frameworks Prisma angebunden, welches auf dem Konzept de
 Das heißt, dass mithilfe von Prisma eine Datenbankstruktur in Form der Datei ./backend/prisma/schema.prisma definiert wird.
 Prisma erstellt daraufhin eine Tabellenstruktur und sichert diese in der SQLite-Datenbank ./backend/prisma/database.db.
 Der Prisma-Client wird dann innerhalb der Next.js-Anwendung aufgerufen und erlaubt die Abfrage der Datenbank in einer objekt-notierten Form, die ebenfalls bereits alle Relationen enthält.
-Zur Umsetzung des Datenbank-Schemas wurde das in \ref{fig:er_diagramm} dargestellte Entity-Relationship-Diagramm in Chen-Notation entworfen.
+Zur Umsetzung des Datenbank-Schemas wurde das in Abbildung \ref{fig:er_diagramm} dargestellte Entity-Relationship-Diagramm in Chen-Notation entworfen.
 Ein Benutzer kann mehrere Transkationen empfangen haben, aber auch durchgeführt haben.
 Eine Transaktion hat immer einen Empfänger und einen Absender.
 
@@ -355,7 +377,7 @@ Solange die Transaktionen im Rahmen des Projekts einen fixen Empfänger erreiche
 \\
 Das Backend wird einem Docker-Container gehostet, welcher mithilfe von Docker-Compose deployed werden kann.
 \\
-In \ref{fig:apidesign} wird dargestellt, welche API-Endpunkte umgesetzt werden sollten:
+In Abbildung \ref{fig:apidesign} wird dargestellt, welche API-Endpunkte umgesetzt werden sollten:
 
 \begin{figure}[H]
   \centering
