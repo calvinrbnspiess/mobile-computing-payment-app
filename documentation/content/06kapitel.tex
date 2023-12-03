@@ -7,10 +7,33 @@ Die Tests wurden auf verschiedenen Emulatoren und Endgeräten durchgeführt.
 Die folgenden Tests wurden durchgeführt:
 
 \begin{itemize}
-    \item Regressionstest
+    \item Regressionstests
     \item Funktionsprüfung
-    \item Abnahmeprüfung
+    \item Integrationstests
+    \item Systemtests
     \item Leistungsprüfung
     \item GUI-Tests
+    \item Abnahmeprüfung
 \end{itemize}
 
+Während der Entwicklung wurden die oben genannten Tests wiederholt durchgeführt.
+Durch Funktions- und Integrationstests wurde immer wieder sichergestellt, dass das Implementierte auch funktioniert.
+Dazu wurden immer wieder die Emulatoren und auch die realen Endgeräte eingesetzt.
+Durch die verschiedenen Softwareversionen wurde die Chance Fehler zu finden erhöht.
+Im Anschluss wurden immer wieder Systemtests durchgeführt, um feststellen zu können, ob weitere Funktionen nicht mehr wie geplant funktionieren.
+Dabei konnten Fehler gefunden werden, wie z.B. dass PayPal unter iOS problemlos funktionierte, unter Android aber nicht.
+Der Fehler konnte durch eine Änderung in der build.gradle behoben werden.
+Dazu wurde die applicationId auf eine com.example... URL geändert und alle Unterstriche entfernt.
+Damit funktionierte der PayPal Bezahlvorgang unter Android wieder.
+Zusätzlich wurden regelmäßig GUI Tests durchgeführt.
+Damit wurde sichergestellt, dass die Anzeigen und GUI Elemente auch auf unterschiedlich großen Geräten gut aussehen und bedienbar sind.
+Ein einfacher Performancetest wurde ebenfalls regelmäßig durchgeführt.
+Dieser diente lediglich dazu, festzustellen, ob es Probleme und lange Ladezeiten bei Funktionen oder Seiten gab.
+Dazu wurden die Zeiten gemessen, um lange Wartezeiten zu erkennen.
+Die oben beschriebenen Tests wurden während der Entwicklung mehrmals kontinuierlich durchgeführt.
+Ganz am Ende, kurz vor der Fertigstellung und Präsentation, gab es noch einen größeren Abnahmetest.
+Dabei wurden alle oben genannten Tests durchgeführt, um sicherzustellen, dass alles korrekt funktioniert und auch vom Design her gut aussieht.
+Dabei wurde festgestellt, dass der Zugriff auf den Backend-Server im \glqq eduroam\grq{} WLAN blockiert wurde.
+Dies verhinderte den Registrierungsprozess zu Beginn und machte die App somit unbrauchbar.
+Durch den Wechsel zu einem anderen WLAN konnte das Problem behoben werden.
+Somit konnte sichergestellt werden, dass die Anwendung zum Zeitpunkt der Präsentation wie erwartet funktionierte.
