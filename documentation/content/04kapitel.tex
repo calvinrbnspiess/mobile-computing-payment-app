@@ -496,8 +496,8 @@ Eine Transaktion hat immer einen Empfänger und einen Absender.
 \begin{figure}[H]
   \centering
   \includegraphics[width=.5\textwidth]{er-diagramm.png}
-  \label{fig:er_diagramm}
   \caption{Darstellung des Entity-Relationship-Diagramms für die Datenbank}
+  \label{fig:er_diagramm}
 \end{figure}
 
 Als kleine Abweichung von diesem ER-Diagramm wird das eigentliche Schema so umgesetzt, dass nur die Relation Absender-Transaction abgebildet wird.
@@ -511,25 +511,33 @@ In Abbildung \ref{fig:apidesign} wird dargestellt, welche API-Endpunkte umgesetz
 \begin{figure}[H]
   \centering
   \includegraphics[width=.8\textwidth]{api-design.png}
-  \label{fig:apidesign}
   \caption{Darstellung der API-Endpunkte für das Backend}
+  \label{fig:apidesign}
 \end{figure}
 
 Zunächst ist ein Endpunkt zur Registrierung vorgesehen, welcher dazu dient den Benutzer mithilfe eines Nicknames und einer E-Mail-Adresse zu registrieren.
 Sofern ein Benutzer bereits existiert wird ein weiterer in der Datenbank angelegt, da hier keine Überprüfung stattfindet.
 Dieser bekommt eine individuelle UUID zugeteilt und wird anschließend in der Datenbank gesichert.\\
+\\
 Es wurde an dieser Stelle bewusst auf eine reale Authentifizierung mittels bspw. Passwort und Session-ID oder JWT verzichtet, da so im Rahmen des Projekts auch auf das clientseitige Session-Handling verzichtet werden konnte.
 So konnte an anderen Bestandteilen der App gearbeitet werden.\\
+\\
 Die UUID wird in den SharedPreferences der App gesichert und dient der Abfrage der weiteren Endpunkte.
 Über den Endpunkt /{uuid}/history kann die Transaktionshistorie abgefragt werden.
 Diese enthält alle Informationen über vergangene Transaktionen wie bspw. Betrag, Währung, Zeitpunkt und Empfänger.
 Eine Transaktion wird clientseitig durch das Aufrufen des POST-Endpunkts /{uuid}/transact gesichert, sofern eine Zahlung komplett abgeschlossen wurde.
 An diesen Endpunkt werden die o.g. Daten übergeben und diese so in der Datenbank gesichert.\\
+\\
 Der weitere Endpunkt /{uuid}/qr dient der Generierung eines individuellen QR-Codes, welcher jeweils für einen Benutzer generiert wird. Der QR-Code enthält einen vordefinierten Betrag, mithilfe dessen die Transaktionen gestartet werden können.
 Als Weiterentwicklung der Applikation könnte so später eine echte Peer-To-Peer-Überweisung ermöglicht werden, sodass die scannende Person an denjenigen überweist, der den QR-Code mit seiner kodierten ID präsentiert.\\
+\\
 Der QR-Code kodiert folgende Informationen in Form eines JSON-Objekts:
 \begin{lstlisting}[caption={Vom Backend generierte Notation für den QR-Code}]
   { namespace: "payero", id:{UUID}, amount: "2.0" }
 \end{lstlisting}
 Mithilfe des Namespace-Attributes kann geprüft werden, ob der QR-Code für Payero vorgesehen ist.
 Ebenfalls enthält der QR-Code die Benutzer-UUID und den Betrag als Gleitkommazahl.
+
+\subsection{Sicherheit}
+
+Für eine produktive Nutzung der App sollte eine echte Authentifzierung über das Backend implementiert werden. Ebenso sollte sichergestellt werden, dass die QR-Codes nach der Erstellung nicht manipuliert werden können. Dies könnte etwa durch ein Public-Key-Verschlüsselungsverfahren sichergestellt werden. Als Implementierung könnten etwa JSON-Web-Tokens genutzt werden, die auf diesem Verfahren basieren. Ein weiterer Vorteil würde darin liegen, dass der QR-Code nicht beim Scannen mithilfe einer anderen App auslesbar wäre.
