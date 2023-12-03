@@ -328,3 +328,57 @@ Dies geschieht bei Android mit \glqq onWillPop\grqq{}.
 \end{lstlisting}
 
 \section{Backend}
+
+Zur Realisierung der Transaktionshistorie wurde ein einfaches Backend mit Node.js entwickelt.
+Dieses kann später erweitert werden und die Grundlage für die Umsetzung einer Authentifizierung und weiterer Features darstellen.
+Es wird das Framework Next.js eingesetzt, da dies für die Autoren keine große Einarbeitungszeit erforderte.
+Mithilfe von diesem können Applikation mit React.js umgesetzt werden, aber auch REST-API's implementiert werden.
+Als Datenbank wird eine einfache SQLite-Datenbank verwendet, da diese als Datei gesichert werden kann.
+Diese wird mithilfe des Frameworks Prisma angebunden, welches auf dem Konzept des Object-Relational-Mappings basiert.
+Das heißt, dass mithilfe von Prisma eine Datenbankstruktur in Form der Datei ./backend/prisma/schema.prisma definiert wird.
+Prisma erstellt daraufhin eine Tabellenstruktur und sichert diese in der SQLite-Datenbank ./backend/prisma/database.db.
+Der Prisma-Client wird dann innerhalb der Next.js-Anwendung aufgerufen und erlaubt die Abfrage der Datenbank in einer objekt-notierten Form, die ebenfalls bereits alle Relationen enthält.
+Zur Umsetzung des Datenbank-Schemas wurde das in \ref{fig:er_diagramm} dargestellte Entity-Relationship-Diagramm in Chen-Notation entworfen.
+Ein Benutzer kann mehrere Transkationen empfangen haben, aber auch durchgeführt haben.
+Eine Transaktion hat immer einen Empfänger und einen Absender.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.5\textwidth]{er-diagramm.png}
+  \label{fig:er_diagramm}
+  \caption{Darstellung des Entity-Relationship-Diagramms für die Datenbank}
+\end{figure}
+
+Als kleine Abweichung von diesem ER-Diagramm wird das eigentliche Schema so umgesetzt, dass nur die Relation Absender-Transaction abgebildet wird.
+Der Empfänger einer Transaktion wird als freies String-Feld umgesetzt, da dieser so frei definiert werden kann.
+Solange die Transaktionen im Rahmen des Projekts einen fixen Empfänger erreichen, ist man so flexibler in der Handhabung und kann einen Dummy-Empfänger wie z.B. die E-Mail-Adresse des Braintree-Accounts angeben.
+\\
+Das Backend wird einem Docker-Container gehostet, welcher mithilfe von Docker-Compose deployed werden kann.
+\\
+In \ref{fig:apidesign} wird dargestellt, welche API-Endpunkte umgesetzt werden sollten:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.8\textwidth]{api-design.png}
+  \label{fig:apidesign}
+  \caption{Darstellung der API-Endpunkte für das Backend}
+\end{figure}
+
+Zunächst ist ein Endpunkt zur Registrierung vorgesehen, welcher dazu dient den Benutzer mithilfe eines Nicknames und einer E-Mail-Adresse zu registrieren.
+Sofern ein Benutzer bereits existiert wird ein weiterer in der Datenbank angelegt, da hier keine Überprüfung stattfindet.
+Dieser bekommt eine individuelle UUID zugeteilt und wird anschließend in der Datenbank gesichert.\\
+Es wurde an dieser Stelle bewusst auf eine reale Authentifizierung mittels bspw. Passwort und Session-ID oder JWT verzichtet, da so im Rahmen des Projekts auch auf das clientseitige Session-Handling verzichtet werden konnte.
+So konnte an anderen Bestandteilen der App gearbeitet werden.\\
+Die UUID wird in den SharedPreferences der App gesichert und dient der Abfrage der weiteren Endpunkte.
+Über den Endpunkt /{uuid}/history kann die Transaktionshistorie abgefragt werden.
+Diese enthält alle Informationen über vergangene Transaktionen wie bspw. Betrag, Währung, Zeitpunkt und Empfänger.
+Eine Transaktion wird clientseitig durch das Aufrufen des POST-Endpunkts /{uuid}/transact gesichert, sofern eine Zahlung komplett abgeschlossen wurde.
+An diesen Endpunkt werden die o.g. Daten übergeben und diese so in der Datenbank gesichert.\\
+Der weitere Endpunkt /{uuid}/qr dient der Generierung eines individuellen QR-Codes, welcher jeweils für einen Benutzer generiert wird. Der QR-Code enthält einen vordefinierten Betrag, mithilfe dessen die Transaktionen gestartet werden können.
+Als Weiterentwicklung der Applikation könnte so später eine echte Peer-To-Peer-Überweisung ermöglicht werden, sodass die scannende Person an denjenigen überweist, der den QR-Code mit seiner kodierten ID präsentiert.\\
+Der QR-Code kodiert folgende Informationen in Form eines JSON-Objekts:
+\begin{lstlisting}[caption={Vom Backend generierte Notation für den QR-Code}]
+  { namespace: "payero", id:{UUID}, amount: "2.0" }
+\end{lstlisting}
+Mithilfe des Namespace-Attributes kann geprüft werden, ob der QR-Code für Payero vorgesehen ist.
+Ebenfalls enthält der QR-Code die Benutzer-UUID und den Betrag als Gleitkommazahl.
