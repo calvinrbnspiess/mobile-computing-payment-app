@@ -85,10 +85,46 @@ Beim Start des Bezahlvorgangs öffnet sich ein Dropin-Fenster.
   \caption{Bezahlmethoden}
 \end{figure}
 
-Hier sieht der Benutzer sämtliche verfügbaren Bezahlmethoden.
-Darunter gehören immer PayPal und Kreditkarte.
-Unter Android gehört auch GooglePay dazu, während ApplePay unter iOS möglich wäre aber nicht vorhanden ist aufgrund des fehlenden Development Accounts.
+Hier sieht der Benutzer alle verfügbaren Zahlungsmethoden.
+Dazu gehören immer PayPal und Kreditkarte.
+Unter Android gehört auch GooglePay dazu, während unter iOS ApplePay zwar möglich wäre, aber aufgrund des fehlenden Entwicklerkontos nicht zur Verfügung steht.
+Je nach Bezahlmethode muss der Nutzer seine Kreditkartendaten oder andere Daten wie das PayPal-Konto eingeben.
+Dabei wird auch geprüft, ob alles passt, z.B. das Ablaufdatum der Kreditkarte.
+Im Fehlerfall wird der Benutzer darauf hingewiesen.
+Auch jetzt ist es noch möglich, den Bezahlvorgang abzubrechen.
+Der Benutzer wird darüber in einer SnackBar informiert.
+Führt der Benutzer die Zahlung jedoch aus, wird er in einer SnackBar über die Verarbeitung der Zahlung informiert.
+Diese SnackBar enthält immer die Zahlungsart und die Informationen dazu.
+Bei PayPal wäre dies PayPal und die dazugehörige E-Mail.
+Bei einer Kreditkarte ist es die Art der Kreditkarte und die Endziffern der Kreditkartennummer.
+In diesem Beispiel ist es eine VISA Kreditkarte mit den Endziffern 1111.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth, height=.8\textwidth]{processing_payment.png}
+  \caption{Verarbeitung des Bezahlvorganges}
+\end{figure}
+
+War der Vorgang erfolgreich, gelangt der Benutzer auf einen weiteren Bildschirm.
+Dieser zeigt dem Benutzer an, dass die Zahlung erfolgreich durchgeführt wurde.
+Außerdem wird der gezahlte Betrag angezeigt.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth, height=.8\textwidth]{payment_success.png}
+  \caption{Erfolgreicher Bezahlvorgang}
+\end{figure}
+
+Klickt der Benutzer auf den Button Fertig, gelangt er zurück zum Hauptmenü.
+Dort ist in der Transaktionshistorie auch direkt ersichtlich, dass die Zahlung erfolgreich durchgeführt wurde.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.45\textwidth, height=.8\textwidth]{mainscreen_payment_success.png}
+  \caption{Zahlung in der Transaktionshistorie sichtbar}
+\end{figure}
+
+Der Benutzer kann nun einen weiteren Bezahlvorgang starten.
 
 \section{Transaktionshistorie}
 Die Transaktionshistorie wurde komplett mithilfe von den zwei selbst entwickelten Widgets TransactionHistory und TransactionEntry implementiert.
