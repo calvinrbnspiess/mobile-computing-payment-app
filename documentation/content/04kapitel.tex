@@ -37,7 +37,7 @@ Zum Erkennen und Scannen der QR-Codes wird die Library \glqq mobile\_scanner\grq
 Diese arbeitet sowohl unter iOS als auch Android zuverlässig.
 Die Integration findet in der \glqq qr\_code\_scan\_screen.dart\grqq{} Datei statt.
 Es wird hierzu die Klasse \glqq \_QRScanScreenState\grqq{} erstellt in welcher die Funktionen der Library implementiert werden.
-Unter anderem ist hier die Steuerung der Kamera, das Wechseln zwischen Front- und Rückkamera möglich und die Steuerung des Kamerablitzes möglich.
+Unter anderem ist hier die Steuerung der Kamera, das Umschalten zwischen Front- und Rückkamera und die Steuerung des Kamerablitzes möglich.
 
 \begin{lstlisting}[caption=Kamerasteuerung, label=cam_ctrl]
 	appBar: PayeroHeader(showBackButton: true, actions: [
@@ -76,9 +76,9 @@ Unter anderem ist hier die Steuerung der Kamera, das Wechseln zwischen Front- un
       ])
 \end{lstlisting}
 
-Der Scan wird kurzen Delay gestartet, um sicherzugehen, dass alles vollständig geladen ist.
-Dabei werden erfolgreich gescannte Barcodes und QR-Codes als Liste gespeichert.
-Wir verwenden aber hier immer nur den ersten erfolgreichen Code innerhalb der Liste.
+Der Scan wird mit einer kurzen Verzögerung gestartet, um sicherzustellen, dass alles vollständig geladen ist.
+Die erfolgreich gescannten Barcodes und QR-Codes werden als Liste gespeichert.
+Wir verwenden hier aber immer nur den ersten erfolgreichen Code in der Liste.
 
 \begin{lstlisting}[caption=QR-Code gefunden, label=qr_found]
   body: MobileScanner(
@@ -91,7 +91,7 @@ Wir verwenden aber hier immer nur den ersten erfolgreichen Code innerhalb der Li
             debugPrint('QRCode found! $code');
 \end{lstlisting}
 
-Nun wird überprüft, ob der gescannte QR-Code auch einem gültigen Format entspricht, sonst wird er abgelehnt.
+Nun wird geprüft, ob der gescannte QR-Code ein gültiges Format hat, andernfalls wird er abgelehnt.
 Der Benutzer wird darüber in einer SnackBar informiert.
 
 \begin{lstlisting}[caption={QR-Code Check}]
@@ -140,7 +140,7 @@ Der Benutzer wird darüber in einer SnackBar informiert.
   }
 \end{lstlisting}
 
-Das gültige Format eines QR-Codes ist in JSON und sieht so aus:
+Das gültige Format eines QR-Codes ist JSON und sieht wie folgt aus:
 
 \begin{lstlisting}[caption={Gültiger QR-Code}]
   {
@@ -150,7 +150,7 @@ Das gültige Format eines QR-Codes ist in JSON und sieht so aus:
   }
 \end{lstlisting}
 
-Der dazugehörige QR-Code sieht dann so aus:
+Der entsprechende QR-Code sieht dann so aus:
 
 \begin{figure}[H]
   \centering
@@ -158,22 +158,22 @@ Der dazugehörige QR-Code sieht dann so aus:
   \caption{Gültiger QR-Code}
 \end{figure}
 
-Beim Anzeigen des Betrages innerhalb der App wird auf jeder Page ausschließlich der Betrag mit zwei Nachkommastellen angezeigt.
-Dies ist unabhängig davon, ob der \glqq amount\grqq{} im QR-Code Nachkommastellen beinhaltet, und dient ausschließlich kosmetischer Eigenschaften, verbessert aber das Nutzererlebnis aufgrund der immer gleichen Formatierung.
-Dies betrifft auch die QR-Codes, welche im Hauptmenü eingescannt werden können.
-Um zu verhindern, dass immer weiter gescannt wird, wenn ein QR-Code gefunden wurde, wird ein bool Flag gesetzt über den Parameter \glqq \_screenOpened\grqq{}.
-Anschließend wird bei einem gültigen QR-Code zu einer neuen Page gewechselt.
-Diese zeigt den zu bezahlenden Betrag an und einen Button mit dem bezahlt werden kann.
-Durch Klick auf den Button öffnet sich das BrainTree DropinUI.
+Bei der Anzeige des Betrags innerhalb der App wird der Betrag auf jeder Seite nur mit zwei Nachkommastellen angezeigt.
+Dies ist unabhängig davon, ob der \glqq amount\grqq{} im QR-Code Nachkommastellen enthält oder nicht, und dient ausschließlich kosmetischen Zwecken, verbessert aber aufgrund der immer gleichen Formatierung das Nutzererlebnis.
+Dies gilt auch für die QR-Codes, die im Hauptmenü gescannt werden können.
+Um zu verhindern, dass immer weiter gescannt wird, wenn ein QR-Code gefunden wurde, wird über den Parameter \glqq \_screenOpened\grqq{} ein Bool-Flag gesetzt.
+Danach wird bei einem gültigen QR-Code auf eine neue Seite gewechselt.
+Diese zeigt den zu zahlenden Betrag und einen Button, mit dem bezahlt werden kann.
+Ein Klick auf den Button öffnet das BrainTree Dropin-UI.
 
 \section{Bezahlintegration mit Braintree}
 
-Im BrainTree DropinUI kann die Bezahlmethode ausgewählt werden.
-Es wird momentan PayPal, Kreditkarte (VISA, Mastercard) und GooglePay angeboten.
-ApplePay ist auch implementiert, aber es muss noch eine gültige Merchant-ID angegeben werden, um die Funktion zu aktivieren.
-Diese Merchant-ID ist ausschließlich mit einem Abonnement des Apple Developer Programm erhältlich.
-Des Weiteren wird ausschließlich der Sandbox Account von Braintree verwendet, da es als Privatperson ohne Unternehmen mit gültiger Umsatzsteueridentifikationsnummer und Angabe der Besitzanteile an der Firma bzw. der Position innerhalb dieser nicht möglich ist einen Produktivaccount zu bekommen aufgrund \S\S 10 - 17 des Geldwäschegesetzes.
-Wenn man in Besitz eines gültigen Braintree Produktivaccount ist, muss man nur den \glqq tokenizationKey\grqq{} austauschen, um die App produktiv zu schalten.
+Die Zahlungsmethode kann im BrainTree Dropin-UI ausgewählt werden.
+Derzeit werden PayPal, Kreditkarte (VISA, Mastercard) und GooglePay angeboten.
+ApplePay ist ebenfalls implementiert, jedoch muss eine gültige Merchant-ID angegeben werden, um die Funktion zu aktivieren.
+Diese Merchant-ID ist nur mit einer Mitgliedschaft im Apple Developer Program erhältlich.
+Darüber hinaus wird ausschließlich der Sandbox-Account von Braintree genutzt, da es als Privatperson ohne gültige Umsatzsteuer-Identifikationsnummer und wahrheitsgemäße Angaben zu den Eigentumsverhältnissen oder der Stellung im Unternehmen gemäß \S\S 10 bis 17 Geldwäschegesetz nicht möglich ist, einen Produktiv-Account zu erhalten.
+Ist man im Besitz eines gültigen Braintree-Produktivaccounts, muss lediglich der \glqq tokenizationKey\grqq{} ausgetauscht werden, um die Anwendung produktiv zu schalten.
 
 \begin{lstlisting}[caption={BrainTree Bezahlmethoden}]
   class _FoundCodeScreenState extends State<FoundCodeScreen> {
@@ -216,12 +216,12 @@ Wenn man in Besitz eines gültigen Braintree Produktivaccount ist, muss man nur 
     );  
 \end{lstlisting}
 
-Mit dem Auswählen der Bezahlmethode wird überprüft, ob eine Internetverbindung besteht.
-Dann erst erfolgt die vollständige Bezahlung und die Übermittlung der Zahldaten an den Backendserver.
-Hier wird der Benutzer wieder über Fehler oder das weitere Vorgehen in einer SnackBar informiert.
-Wenn also keine Internetverbindung besteht, oder Benutzer den Bezahlvorgang abbricht, um zum Beispiel noch die Bezahlmethode zu wechseln, wird dieser in einer Snackbar darüber informiert.
-Bezahlt der Benutzer nun wird er über die Verarbeitung des Bezahlvorganges mit seiner jeweiligen Zahlmethode in einer SnackBar informiert.
-Anschließend landet der Benutzer auf einer Abschlussseite, wenn der Bezahlvorgang erfolgreich war.
+Bei der Auswahl der Zahlungsmethode wird geprüft, ob eine Internetverbindung besteht.
+Erst dann erfolgt die vollständige Bezahlung und die Übermittlung der Zahlungsdaten an den Backend-Server.
+Auch hier wird der Benutzer in einer SnackBar über Fehler oder das weitere Vorgehen informiert.
+Besteht also keine Internetverbindung oder bricht der Benutzer den Bezahlvorgang ab, um z.B. noch die Bezahlmethode zu wechseln, wird er in einer SnackBar darüber informiert.
+Bezahlt der Benutzer nun, wird er in einer SnackBar über die Verarbeitung des Bezahlvorgangs mit seiner jeweiligen Bezahlmethode informiert.
+Wenn der Bezahlvorgang erfolgreich war, wird der Benutzer auf eine Abschlussseite weitergeleitet.
 
 \begin{lstlisting}[caption={Durchführung des Bezahlvorganges}]
   try {
@@ -285,10 +285,11 @@ Anschließend landet der Benutzer auf einer Abschlussseite, wenn der Bezahlvorga
 \end{lstlisting}
 
 Auf dieser Abschlussseite \glqq end\_screen.dart\grqq{} wird der Benutzer über den erfolgreich bezahlten Betrag informiert.
-Anschließend kann er noch den Vorgang mit dem \glqq Fertig\grqq{} Button abschließen, um wieder im Hauptmenü zu landen.
-Damit kann ein neuer Bezahlvorgang gestartet werden.
-Der \glqq Zurück\grqq{} Button ist auf dieser Seite extra unterbunden, damit ein Anwender nicht doch aus Versehen wieder auf der Bezahlseite landet und den Betrag erneut bezahlt.
-Dabei ist auch der Hardware Button unter Android mit eingeschlossen, da sonst auch bei Deaktivieren in der Software ein zurück über diesen möglich ist.
+Anschließend kann er den Vorgang mit dem Button \glqq Fertig\grqq{} abschließen, um wieder ins Hauptmenü zu gelangen.
+Ein neuer Bezahlvorgang kann gestartet werden.
+Der \glqq Zurück\grqq{} Button ist auf dieser Seite extra deaktiviert, damit ein Benutzer nicht aus Versehen wieder auf der Bezahlseite landet und den Betrag erneut bezahlt.
+Dazu gehört auch der Hardware-Button unter Android, der auf dieser Seite deaktiviert ist.
+Ansonsten wäre auch bei ausschließlicher Deaktivierung in der Software ein Zurück über diesen Hardware-Button möglich.
 Dies geschieht bei Android mit \glqq onWillPop\grqq{}.
 
 \begin{lstlisting}[caption={EndScreen bei erfolgreichem Bezahlvorgang}]
