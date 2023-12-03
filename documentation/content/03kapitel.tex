@@ -1,0 +1,322 @@
+%!TEX root = ../dokumentation.tex
+
+\chapter{Implementierung}
+
+Dieses Kapitel beinhaltet sämtliche Implementierungen und Features in der App.
+Dabei werden benutzte Libraries und Code aus der App gezeigt.
+
+\section{App}
+
+Hier screenshots und erklärung
+
+\section{QR-Code Scanner}
+
+Zum Erkennen und Scannen der QR-Codes wird die Library ``mobile\_scanner'' in der Version ``3.5.2'' genutzt.
+Diese arbeitet sowohl unter iOS als auch Android zuverlässig.
+Die Integration findet in der ``qr\_code\_scan\_screen.dart'' Datei statt.
+Es wird hierzu die Klasse ``\_QRScanScreenState'' erstellt in welcher die Funktionen der Library implementiert werden.
+Unter anderem ist hier die Steuerung der Kamera, das Wechseln zwischen Front- und Rückkamera möglich und die Steuerung des Kamerablitzes möglich.
+
+\begin{lstlisting}[caption=Kamerasteuerung, label=cam_ctrl]
+	appBar: PayeroHeader(showBackButton: true, actions: [
+        IconButton(
+          color: Colors.white,
+          icon: ValueListenableBuilder(
+            valueListenable: cameraController.torchState,
+            builder: (context, state, child) {
+              switch (state as TorchState) {
+                case TorchState.off:
+                  return const Icon(Icons.flash_off, color: Colors.grey);
+                case TorchState.on:
+                  return const Icon(Icons.flash_on, color: Colors.yellow);
+              }
+            },
+          ),
+          iconSize: 32.0,
+          onPressed: () => cameraController.toggleTorch(),
+        ),
+        IconButton(
+          color: Colors.white,
+          icon: ValueListenableBuilder(
+            valueListenable: cameraController.cameraFacingState,
+            builder: (context, state, child) {
+              switch (state as CameraFacing) {
+                case CameraFacing.front:
+                  return const Icon(Icons.camera_front, color: Colors.grey);
+                case CameraFacing.back:
+                  return const Icon(Icons.camera_rear, color: Colors.grey);
+              }
+            },
+          ),
+          iconSize: 32.0,
+          onPressed: () => cameraController.switchCamera(),
+        )
+      ])
+\end{lstlisting}
+
+Der Scan wird kurzen Delay gestartet, um sicherzugehen, dass alles vollständig geladen ist.
+Dabei werden erfolgreich gescannte Barcodes und QR-Codes als Liste gespeichert.
+Wir verwenden aber hier immer nur den ersten erfolgreichen Code innerhalb der Liste.
+
+\begin{lstlisting}[caption=QR-Code gefunden, label=qr_found]
+  body: MobileScanner(
+        startDelay: true,
+        controller: cameraController,
+        onDetect: (capture) {
+          final List<Barcode> barcodes = capture.barcodes;
+          if (barcodes.isNotEmpty && !_screenOpened) {
+            final String code = barcodes.first.rawValue ?? "---";
+            debugPrint('QRCode found! $code');
+\end{lstlisting}
+
+Nun wird überprüft, ob der gescannte QR-Code auch einem gültigen Format entspricht, sonst wird er abgelehnt.
+Der Benutzer wird darüber in einer SnackBar informiert.
+
+\begin{lstlisting}[caption={QR-Code Check}]
+  try {
+    final Map<String, dynamic> data = jsonDecode(code);
+
+    // Ueberpruefen, ob der Namespace 'payero' ist
+    if (data['namespace'] != 'payero') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ungueltiger QR-Code')),
+      );
+      return; // Beenden der Funktion, wenn der Namespace nicht stimmt
+    }
+
+    // Ueberpruefen, ob der 'amount' zu einem double konvertiert werden kann
+    final double? amount = double.tryParse(data['amount'].toString());
+    if (amount == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ungueltiger QR-Code')),
+      );
+      return; // Beenden der Funktion, wenn der amount ungueltig ist
+    }
+
+    final String formattedAmount = amount.toStringAsFixed(2);
+
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+    // Weitermachen mit gueltigen Daten
+    _screenOpened = true;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FoundCodeScreen(
+          screenClosed: _screenWasClosed,
+          userId: userId,
+          value: formattedAmount,
+        ),
+      ),
+    ).then((_) => _screenWasClosed());
+  } catch (e) {
+    debugPrint("Error while scanning: ${e.toString()}");
+    // Generische Fehlermeldung anzeigen
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Ungueltiger QR-Code')),
+    );
+  }
+\end{lstlisting}
+
+Das gültige Format eines QR-Codes sieht so aus:
+
+\begin{lstlisting}[caption={Gültiger QR-Code}]
+  {
+   "namespace":"payero",
+   "userID":"user1",
+   "amount":"3.00"
+  }
+\end{lstlisting}
+
+Beim Anzeigen des Betrages innerhalb der App wird auf jeder Page ausschließlich der Betrag mit zwei Nachkommastellen angezeigt.
+Dies ist unabhängig davon, ob der ``amount'' im QR-Code Nachkommastellen beinhaltet, und dient ausschließlich kosmetischer Eigenschaften, verbessert aber das Nutzererlebnis aufgrund der immer gleichen Formatierung.
+Dies betrifft auch die QR-Codes, welche im Hauptmenü eingescannt werden können.
+Um zu verhindern, dass immer weiter gescannt wird, wenn ein QR-Code gefunden wurde, wird ein bool Flag gesetzt über den Parameter ``\_screenOpened''.
+Anschließend wird bei einem gültigen QR-Code zu einer neuen Page gewechselt.
+Diese zeigt den zu bezahlenden Betrag an und einen Button mit dem bezahlt werden kann.
+Durch Klick auf den Button öffnet sich das BrainTree DropinUI.
+
+\section{Bezahlintegration mit Braintree}
+
+Im BrainTree DropinUI kann die Bezahlmethode ausgewählt werden.
+Es wird momentan PayPal, Kreditkarte (VISA, Mastercard) und GooglePay angeboten.
+ApplePay ist auch implementiert, aber es muss noch eine gültige Merchant-ID angegeben werden, um die Funktion zu aktivieren.
+Diese Merchant-ID ist ausschließlich mit einem Abonnement des Apple Developer Programm erhältlich.
+Des Weiteren wird ausschließlich der Sandbox Account von Braintree verwendet, da es als Privatperson ohne Unternehmen mit gültiger Umsatzsteueridentifikationsnummer und Angabe der Besitzanteile an der Firma bzw. der Position innerhalb dieser nicht möglich ist einen Produktivaccount zu bekommen aufgrund \S\S 10 - 17 des Geldwäschegesetzes.
+Wenn man in Besitz eines gültigen Braintree Produktivaccount ist, muss man nur den ``tokenizationKey'' austauschen, um die App produktiv zu schalten.
+
+\begin{lstlisting}[caption={BrainTree Bezahlmethoden}]
+  class _FoundCodeScreenState extends State<FoundCodeScreen> {
+  String currency = "EUR";
+
+  void startBraintreeCheckout() async {
+    var request = BraintreeDropInRequest(
+      tokenizationKey:
+          'sandbox_d53t3dpq_8fxhdjy2nrd33mtm', // Ersetzen mit echtem tokenizationKey aus BrainTree Account
+      collectDeviceData: true,
+      paypalRequest: BraintreePayPalRequest(
+        amount: widget.value,
+        displayName: 'Payero',
+        currencyCode: currency,
+      ),
+      googlePaymentRequest: BraintreeGooglePaymentRequest(
+        totalPrice: widget.value,
+        currencyCode: currency,
+        billingAddressRequired: false,
+      ),
+      applePayRequest: BraintreeApplePayRequest(
+        paymentSummaryItems: [
+          ApplePaySummaryItem(
+              label: 'Payero',
+              amount: double.parse(widget.value),
+              type: ApplePaySummaryItemType.final_)
+        ],
+        displayName: 'Payero',
+        currencyCode: currency,
+        countryCode: 'DE',
+        merchantIdentifier:
+            'merchant.com.example.mobile_computing_payment_app', // Ersetzen mit echtem Apple Pay Merchant Identifier
+        supportedNetworks: [
+          ApplePaySupportedNetworks.visa,
+          ApplePaySupportedNetworks.masterCard,
+          ApplePaySupportedNetworks.amex
+        ],
+      ),
+      // Weitere Optionen und Konfigurationen
+    );  
+\end{lstlisting}
+
+Mit dem Auswählen der Bezahlmethode wird überprüft, ob eine Internetverbindung besteht.
+Dann erst erfolgt die vollständige Bezahlung und die Übermittlung der Zahldaten an den Backendserver.
+Hier wird der Benutzer wieder über Fehler oder das weitere Vorgehen in einer SnackBar informiert.
+Wenn also keine Internetverbindung besteht, oder Benutzer den Bezahlvorgang abbricht, um zum Beispiel noch die Bezahlmethode zu wechseln, wird dieser in einer Snackbar darüber informiert.
+Bezahlt der Benutzer nun wird er über die Verarbeitung des Bezahlvorganges mit seiner jeweiligen Zahlmethode in einer SnackBar informiert.
+Anschließend landet der Benutzer auf einer Abschlussseite, wenn der Bezahlvorgang erfolgreich war.
+
+\begin{lstlisting}[caption={Durchführung des Bezahlvorganges}]
+  try {
+    BraintreeDropInResult? result = await BraintreeDropIn.start(request);
+    if (result != null) {
+      // print(
+      //     'Zahlung erfolgreich: ${result.paymentMethodNonce.typeLabel} ${result.paymentMethodNonce.description}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Bearbeite Zahlungsvorgang mit ${result.paymentMethodNonce.typeLabel} ${result.paymentMethodNonce.description}'),
+            duration: const Duration(seconds: 2)),
+      );
+
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   content: Text(
+      //       'Zahlung erfolgreich: ${result.paymentMethodNonce.typeLabel} ${result.paymentMethodNonce.description}'),
+      //   duration: const Duration(seconds: 2),
+      // ));
+
+      await Future.delayed(const Duration(seconds: 3));
+
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => EndScreen(value: widget.value)));
+
+      // Weitere Aktionen nach erfolgreicher Zahlung
+
+      try {
+        if (widget.userId == "") {
+          throw Exception("userId is empty");
+        }
+
+        final response = await http.post(
+            Uri.parse("$SERVER_URL/${widget.userId}/transact"),
+            body: jsonEncode(<String, String>{
+              "receiver": "mobile_computing_payment_app",
+              "amount": '${double.parse(widget.value) * -1}',
+              "currency": currency,
+              "message": "${result.paymentMethodNonce.description}"
+            }));
+
+        debugPrint("response: " + response.body);
+
+        if (response.statusCode != 200) {
+          throw Exception('Failed to save transaction.' + response.body);
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Zahlungsvorgang abgebrochen'),
+          duration: Duration(seconds: 2)));
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            'Zahlungsvorgang abgebrochen. Stellen Sie sicher, dass Sie mit dem Internet verbunden sind. \n\n Fehler: $e')));
+  }
+}
+\end{lstlisting}
+
+Auf dieser Abschlussseite ``end\_screen.dart'' wird der Benutzer über den erfolgreich bezahlten Betrag informiert.
+Anschließend kann er noch den Vorgang mit dem ``Fertig'' Button abschließen, um wieder im Hauptmenü zu landen.
+Damit kann ein neuer Bezahlvorgang gestartet werden.
+Der ``Zurück'' Button ist auf dieser Seite extra unterbunden, damit ein Anwender nicht doch aus Versehen wieder auf der Bezahlseite landet und den Betrag erneut bezahlt.
+Dabei ist auch der Hardware Button unter Android mit eingeschlossen, da sonst auch bei Deaktivieren in der Software ein zurück über diesen möglich ist.
+Dies geschieht bei Android mit ``onWillPop''.
+
+\begin{lstlisting}[caption={EndScreen bei erfolgreichem Bezahlvorgang}]
+  class EndScreen extends StatelessWidget {
+  final String value;
+
+  const EndScreen({Key? key, required this.value}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        onWillPop: () async => false, // Verhindert das Zurueckgehen
+        child: Scaffold(
+            appBar: const PayeroHeader(
+              showBackButton: false,
+            ),
+            body: Stack(children: [
+              Column(children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                        bottom: 30, top: 80, left: 30, right: 30),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Zahlung erfolgreich ausgefuehrt',
+                            style: TextStyle(fontSize: 20)),
+                        Text('\$ value \euro',
+                            style: const TextStyle(
+                                fontSize: 40, fontWeight: FontWeight.bold)),
+                        SvgPicture.asset(
+                          'assets/images/payero-illustration.svg',
+                          fit: BoxFit.fitWidth,
+                          alignment: Alignment.center,
+                          // height: 50.0,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                    margin:
+                        const EdgeInsets.only(left: 30, right: 30, bottom: 30),
+                    child: Column(children: [
+                      PayeroButton(
+                          text: "Fertig",
+                          onClick: () => {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const MainScreen(),
+                                    ))
+                              }),
+                    ]))
+              ]),
+            ])));
+  }
+}
+\end{lstlisting}
+
+\section{Backend}
