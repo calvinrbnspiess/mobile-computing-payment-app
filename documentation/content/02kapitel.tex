@@ -6,6 +6,42 @@ Ziel des Projektes ist die Realisierung einer plattformunabhängigen App.
 Dies geschieht mit dem Framework Flutter und der dazugehörigen Programmiersprache Dart.
 Die App soll dabei einen Bezahlvorgang durch das Scannen eines QR-Codes ermöglichen.
 Unsere App trägt den Namen \glqq Payero\grqq{} und läuft auf iOS und Android.
+
+\subsection{Anforderungen}
+
+Nachfolgend werden die technischen Anforderungen für die Umsetzung der Applikation formuliert. Anhand dieser Anforderungen sollen die Features der App umgesetzt und auch die Konzeption durchgeführt werden:
+
+\begin{itemize}
+    \item Plattformunabhängigkeit
+    \item Bezahlvorgänge
+    \begin{itemize}
+        \item Erfassen von QR-Codes mit fest definiertem Empfänger und Zahlungsbetrag
+        \item Integration von PayPal
+        \item Integration von weiteren Bezahlmethoden (Zusatz-Feature)
+        \item Abwicklung von Zahlungsvorgängen mit individuellen Beträgen
+    \end{itemize}
+    \item Backend-Anbindung (Zusatz-Feature)
+    \begin{itemize}
+        \item Benutzer-Authentifizierung
+        \item Transaktions-Historie
+        \item QR-Code-Generierung
+    \end{itemize}
+    \item Umsetzung der Screens
+    \begin{itemize}
+            \item Unterstützung von Endgeräten mit unterschiedlichen Bildschirmgrößen
+            \item Anwenderfreundlichkeit
+    \end{itemize}
+    \item Einstellungen (Zusatz-Feature)
+    \begin{itemize}
+        \item Logout
+    \end{itemize}
+\end{itemize}
+
+Die als Zusatz-Feature angegebenen Punkte stellen über die Aufgabenstellung hinausgehende Anforderungen dar, die im Rahmen des Projekts umgesetzt werden könnten.
+
+
+\subsection{Umsetzte Funktionen}
+
 Die App bietet folgende Funktionen:
 
 \begin{itemize}
@@ -42,3 +78,5 @@ Die App bietet folgende Funktionen:
     \item Einfache Bedienbarkeit durch Benutzer
     \item Designlanguage mit einer eigenen Corporate Identity mit MaterialDesign
 \end{itemize}
+
+Zur Erweiterung dieser grundlegenden Idee ist es geplant eine Peer-To-Peer Bezahl-Applikation zu entwickeln, mit der Anwender individuelle QR-Codes besitzen und über diese Bezahlvorgänge an die eigene Person abgewickelt werden können.
